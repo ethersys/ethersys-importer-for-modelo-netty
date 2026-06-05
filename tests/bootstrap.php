@@ -15,6 +15,15 @@ if ( ! $_tests_dir ) {
 	define( 'MNTI_BASENAME', 'modelo-nettytowpimport/modelo-nettytowpimport.php' );
 
 	require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+
+	// Stubs des fonctions WordPress utilisées par les classes testées.
+	if ( ! function_exists( 'remove_accents' ) ) {
+		function remove_accents( string $str ): string {
+			$transliterated = iconv( 'UTF-8', 'ASCII//TRANSLIT//IGNORE', $str );
+			return ( $transliterated !== false ) ? $transliterated : $str;
+		}
+	}
+
 	return;
 }
 

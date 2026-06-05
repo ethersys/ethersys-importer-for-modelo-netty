@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flux>
+  <bien>
+    <reference_technique>REF-FULL</reference_technique>
+    <reference_a_afficher>REF-DISPLAY-001</reference_a_afficher>
+    <type_annonce>location</type_annonce>
+    <type_prod>Appartement</type_prod>
+    <etat>Disponible</etat>
+    <mise_en_avant>oui</mise_en_avant>
+    <titre>Appartement complet</titre>
+    <description>Beau &amp; grand appartement&lt;br&gt;Très lumineux</description>
+    <code_postal>69001</code_postal>
+    <ville>Lyon</ville>
+    <surface_habitable>75,5</surface_habitable>
+    <surface_terrain>0</surface_terrain>
+    <nb_piece>4</nb_piece>
+    <nb_chambre>2</nb_chambre>
+    <nb_sdb>1</nb_sdb>
+    <nb_sde>1</nb_sde>
+    <wc>1</wc>
+    <cave>oui</cave>
+    <piscine>non</piscine>
+    <stationnement_interne>1</stationnement_interne>
+    <stationnement_externe>0</stationnement_externe>
+    <type_cuisine>Equipee</type_cuisine>
+    <type_chauffage>Individuel</type_chauffage>
+    <chauffages>Gaz</chauffages>
+    <climatisations>non</climatisations>
+    <ameublement>Meuble</ameublement>
+    <loyer>1200</loyer>
+    <charges>150</charges>
+    <prix>0</prix>
+    <depot_garantie>2400</depot_garantie>
+    <honoraires_visite_dossier>200</honoraires_visite_dossier>
+    <honoraires_etat_lieux>150</honoraires_etat_lieux>
+    <honoraires_locataire>1200</honoraires_locataire>
+    <dpe_etat>Effectué</dpe_etat>
+    <bilan_energie>C</bilan_energie>
+    <valeur_energie>120</valeur_energie>
+    <bilan_ges>B</bilan_ges>
+    <valeur_ges>15</valeur_ges>
+    <dpe_date_realisation>2023-06-15</dpe_date_realisation>
+    <dpe_cout_min_conso>800</dpe_cout_min_conso>
+    <dpe_cout_max_conso>1100</dpe_cout_max_conso>
+    <dpe_annee_reference_conso>2021</dpe_annee_reference_conso>
+    <images>
+      <image>https://images.test/photo1.jpg</image>
+      <image>https://images.test/photo2.jpg</image>
+    </images>
+  </bien>
+</flux>

@@ -1,9 +1,9 @@
 {
-  "name": "ethersys/modelo-nettytowpimport",
+  "name": "ethersys/modelo-netty-importer",
   "description": "Synchronise un flux XML Modelo/Netty vers des biens immobiliers WordPress (thème Houzez) : création, mise à jour, suppression, médias, logs et DPE/GES.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
-  "homepage": "https://github.com/ethersys/Modelo-NettyToWPImport",
+  "homepage": "https://github.com/ethersys/Modelo-Netty-Importer",
   "keywords": ["wordpress", "plugin", "houzez", "immobilier", "netty", "modelo", "import", "xml"],
   "authors": [
     {
@@ -13,8 +13,8 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/ethersys/Modelo-NettyToWPImport/issues",
-    "source": "https://github.com/ethersys/Modelo-NettyToWPImport"
+    "issues": "https://github.com/ethersys/Modelo-Netty-Importer/issues",
+    "source": "https://github.com/ethersys/Modelo-Netty-Importer"
   },
   "require": {
     "php": ">=8.3"
@@ -31,7 +31,7 @@
   },
   "autoload": {
     "classmap": [
-      "modelo-nettytowpimport/includes/"
+      "modelo-netty-importer/includes/"
     ]
   },
   "autoload-dev": {
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "test": "phpunit --configuration phpunit.xml",
-    "lint": "phpcs --standard=.phpcs.xml modelo-nettytowpimport/",
+    "lint": "phpcs --standard=.phpcs.xml modelo-netty-importer/",
     "analyse": "phpstan analyse --configuration phpstan.neon --memory-limit=1G"
   },
   "config": {

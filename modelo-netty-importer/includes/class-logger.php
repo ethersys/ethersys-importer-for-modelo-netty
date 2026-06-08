@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -23,6 +23,7 @@ final class Logger {
 		global $wpdb;
 
 		$runs_table = Db::runs_table();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- INSERT on custom table; no WP CRUD API for custom tables.
 		$wpdb->insert(
 			$runs_table,
 			[
@@ -71,6 +72,7 @@ final class Logger {
 		global $wpdb;
 		$runs_table = Db::runs_table();
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- UPDATE on custom table; no WP CRUD API for custom tables.
 		$wpdb->update(
 			$runs_table,
 			[
@@ -102,6 +104,7 @@ final class Logger {
 		$post_id   = isset( $ctx['post_id'] ) ? (int) $ctx['post_id'] : null;
 		$att_id    = isset( $ctx['attachment_id'] ) ? (int) $ctx['attachment_id'] : null;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- INSERT on custom table; no WP CRUD API for custom tables.
 		$wpdb->insert(
 			$logs_table,
 			[

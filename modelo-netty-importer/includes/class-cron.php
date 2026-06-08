@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -40,13 +40,13 @@ final class Cron {
 		$schedules[ self::SCHEDULE_RECURRENCE ] = [
 			'interval' => $interval,
 			/* translators: %s: interval in seconds (debug / cron list) */
-			'display'  => sprintf( __( 'Import Immo (intervalle : %d s)', 'modelo-nettytowpimport' ), $interval ),
+			'display'  => sprintf( __( 'Import Immo (intervalle : %d s)', 'modelo-netty-importer' ), $interval ),
 		];
 
 		if ( ! isset( $schedules[ self::PURGE_SCHEDULE ] ) ) {
 			$schedules[ self::PURGE_SCHEDULE ] = [
 				'interval' => DAY_IN_SECONDS,
-				'display'  => __( 'Quotidien (nettoyage des logs Netty)', 'modelo-nettytowpimport' ),
+				'display'  => __( 'Quotidien (nettoyage des logs Netty)', 'modelo-netty-importer' ),
 			];
 		}
 

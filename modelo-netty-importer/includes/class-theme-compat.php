@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *

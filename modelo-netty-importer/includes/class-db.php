@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -78,23 +78,23 @@ final class Db {
 		$runs_table = self::runs_table();
 		$logs_table = self::logs_table();
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- table names from self::*_table(), placeholders are %d repeated.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table names from self::*_table(), not user input; custom tables, no WP cache API applicable.
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT id FROM {$runs_table} ORDER BY id DESC LIMIT 100000 OFFSET %d",
 				$max_runs
 			)
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		if ( empty( $ids ) ) {
 			return;
 		}
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- table names from self::*_table(), placeholders are %d repeated.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table names from self::*_table(), not user input; custom tables.
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$logs_table} WHERE run_id IN ({$placeholders})", ...array_map( 'intval', $ids ) ) );
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- table names from self::*_table(), placeholders are %d repeated.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table names from self::*_table(), not user input; custom tables.
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$runs_table} WHERE id IN ({$placeholders})", ...array_map( 'intval', $ids ) ) );
 	}
 }

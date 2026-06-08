@@ -32,9 +32,9 @@ function mnti_uninstall_cleanup(): void {
 	// Tables custom (noms construits comme dans Db::runs_table()/logs_table()).
 	$runs_table = $wpdb->prefix . 'mnti_import_runs';
 	$logs_table = $wpdb->prefix . 'mnti_import_logs';
-	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- noms de tables internes, pas de saisie utilisateur.
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DROP TABLE lors de la désinstallation ; noms de tables internes, pas de saisie utilisateur.
 	$wpdb->query( "DROP TABLE IF EXISTS {$logs_table}" );
-	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- noms de tables internes, pas de saisie utilisateur.
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DROP TABLE lors de la désinstallation ; noms de tables internes, pas de saisie utilisateur.
 	$wpdb->query( "DROP TABLE IF EXISTS {$runs_table}" );
 
 	// Options (mnti_feed_url peut contenir un token d'accès).
@@ -58,14 +58,14 @@ function mnti_uninstall_cleanup(): void {
 }
 
 if ( is_multisite() ) {
-	$site_ids = get_sites(
+	$mnti_site_ids = get_sites(
 		[
 			'fields' => 'ids',
 			'number' => 0,
 		]
 	);
-	foreach ( $site_ids as $site_id ) {
-		switch_to_blog( (int) $site_id );
+	foreach ( $mnti_site_ids as $mnti_site_id ) {
+		switch_to_blog( (int) $mnti_site_id );
 		mnti_uninstall_cleanup();
 		restore_current_blog();
 	}

@@ -80,7 +80,7 @@ jobs:
             "core": "${{ matrix.wp-version }}",
             "phpVersion": "${{ matrix.php-version }}",
             "plugins": [
-              "../modelo-nettytowpimport",
+              "../modelo-netty-importer",
               "./houzez-stub"
             ],
             "themes": [],

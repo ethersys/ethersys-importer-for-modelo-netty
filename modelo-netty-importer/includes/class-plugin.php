@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -19,11 +19,9 @@ namespace Modelo\NettyImport;
 defined( 'ABSPATH' ) || exit;
 
 final class Plugin {
-	public const TEXT_DOMAIN = 'modelo-nettytowpimport';
+	public const TEXT_DOMAIN = 'modelo-netty-importer';
 
 	public static function init(): void {
-		add_action( 'plugins_loaded', [ __CLASS__, 'load_textdomain' ] );
-
 		register_activation_hook( MNTI_BASENAME, [ __CLASS__, 'activate' ] );
 		register_deactivation_hook( MNTI_BASENAME, [ __CLASS__, 'deactivate' ] );
 
@@ -55,14 +53,6 @@ final class Plugin {
 					HouzezSearchI18n::init();
 				}
 			}
-		);
-	}
-
-	public static function load_textdomain(): void {
-		load_plugin_textdomain(
-			self::TEXT_DOMAIN,
-			false,
-			dirname( MNTI_BASENAME ) . '/languages'
 		);
 	}
 

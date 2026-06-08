@@ -25,8 +25,8 @@ wp-env reset --yes
 
 # ── Réactivation du plugin (crée les tables custom) ───────────────────────
 echo "→ Réactivation du plugin (création des tables)..."
-wp-env run cli wp plugin deactivate modelo-nettytowpimport
-wp-env run cli wp plugin activate modelo-nettytowpimport
+wp-env run cli wp plugin deactivate modelo-netty-importer
+wp-env run cli wp plugin activate modelo-netty-importer
 
 # ── Restauration des options ───────────────────────────────────────────────
 echo "→ Restauration des options..."

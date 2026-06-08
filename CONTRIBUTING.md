@@ -1,10 +1,10 @@
 # Contribuer
 
-Merci de votre intérêt pour **Modelo/Netty to WP Import**. Les contributions (issues, correctifs, documentation) sont les bienvenues.
+Merci de votre intérêt pour **Modelo Netty Importer**. Les contributions (issues, correctifs, documentation) sont les bienvenues.
 
 ## Signaler un bug ou proposer une évolution
 
-Ouvrez une [issue](https://github.com/ethersys/Modelo-NettyToWPImport/issues) en décrivant :
+Ouvrez une [issue](https://github.com/ethersys/Modelo-Netty-Importer/issues) en décrivant :
 
 - la version du plugin, de WordPress et de PHP ;
 - le thème utilisé (Houzez et sa version) ;
@@ -25,7 +25,7 @@ composer install
 
 ## Conventions de code
 
-- Le code distribuable vit intégralement dans `modelo-nettytowpimport/`, namespace `Modelo\NettyImport`, préfixe `mnti_` pour options, hooks, transients et tables.
+- Le code distribuable vit intégralement dans `modelo-netty-importer/`, namespace `Modelo\NettyImport`, préfixe `mnti_` pour options, hooks, transients et tables.
 - Respecter les **WordPress Coding Standards** (configuration `.phpcs.xml`).
 - Pas de secret en dur, pas de `error_log` direct (utiliser `Logger`), noms de tables via `Db::runs_table()` / `Db::logs_table()`.
 - Voir `CLAUDE.md` pour l'architecture détaillée et les garde-fous.
@@ -42,7 +42,7 @@ Les tests d'intégration (`wp-env-test/`) nécessitent un environnement WordPres
 
 ## Pull requests
 
-1. Forkez le [dépôt](https://github.com/ethersys/Modelo-NettyToWPImport) et créez une branche dédiée.
+1. Forkez le [dépôt](https://github.com/ethersys/Modelo-Netty-Importer) et créez une branche dédiée.
 2. Gardez la PR ciblée (un sujet par PR) et mettez à jour `CHANGELOG.md`.
 3. Décrivez le changement et la façon de le tester.
 

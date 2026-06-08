@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -74,9 +74,9 @@ final class Importer {
 
 		if ( ! self::is_feed_configured() ) {
 			$run_id = Logger::start_run( '' );
-			Logger::log_error( $run_id, 'no_feed_url', __( 'URL du flux XML non configurée (réglages du plugin).', 'modelo-nettytowpimport' ) );
+			Logger::log_error( $run_id, 'no_feed_url', __( 'URL du flux XML non configurée (réglages du plugin).', 'modelo-netty-importer' ) );
 			++$counts['errors'];
-			Logger::finish_run_failed( $run_id, __( 'URL du flux non configurée', 'modelo-nettytowpimport' ), $counts );
+			Logger::finish_run_failed( $run_id, __( 'URL du flux non configurée', 'modelo-netty-importer' ), $counts );
 			return [
 				'run_id' => $run_id,
 				'counts' => $counts,
@@ -92,8 +92,8 @@ final class Importer {
 
 		// 2. Verrou atomique
 		if ( ! add_option( self::LOCK_OPTION, $run_id, '', false ) ) {
-			Logger::log_error( $run_id, 'locked', __( 'Import déjà en cours (verrou actif).', 'modelo-nettytowpimport' ) );
-			Logger::finish_run_failed( $run_id, __( 'Import déjà en cours', 'modelo-nettytowpimport' ), $counts );
+			Logger::log_error( $run_id, 'locked', __( 'Import déjà en cours (verrou actif).', 'modelo-netty-importer' ) );
+			Logger::finish_run_failed( $run_id, __( 'Import déjà en cours', 'modelo-netty-importer' ), $counts );
 			return [
 				'run_id' => $run_id,
 				'counts' => $counts,
@@ -276,6 +276,7 @@ final class Importer {
 	private static function cleanup_stale_runs(): void {
 		global $wpdb;
 		$runs_table = Db::runs_table();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- UPDATE on custom table; table name from Db::runs_table(), not user input.
 		$affected   = $wpdb->query(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from Db::runs_table(), not user input.
@@ -298,11 +299,11 @@ final class Importer {
 		$url = self::get_feed_url();
 		if ( ! self::is_feed_configured() ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- exception message, not rendered output.
-			throw new \RuntimeException( __( 'URL du flux invalide ou vide.', 'modelo-nettytowpimport' ) );
+			throw new \RuntimeException( __( 'URL du flux invalide ou vide.', 'modelo-netty-importer' ) );
 		}
 
 		$headers = [
-			'User-Agent' => 'Modelo-NettyToWPImport/' . MNTI_VERSION,
+			'User-Agent' => 'Modelo-Netty-Importer/' . MNTI_VERSION,
 		];
 
 		$etag          = (string) get_option( self::OPT_FEED_ETAG, '' );
@@ -364,6 +365,7 @@ final class Importer {
 	 */
 	private static function load_ref_index(): array {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- bulk index load at run start; caching would return stale data across import runs.
 		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT post_id, meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s",

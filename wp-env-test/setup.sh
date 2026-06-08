@@ -51,7 +51,7 @@ wp-env run cli wp language plugin update --all
 wp-env run cli wp language theme update --all
 
 # ── Configuration plugin ───────────────────────────────────────────────────
-echo "→ Configuration de Modelo-NettyToWPImport..."
+echo "→ Configuration de Modelo-Netty-Importer..."
 wp-env run cli wp option update mnti_feed_url "$MNTI_FEED_URL"
 wp-env run cli wp option update mnti_schedule_interval 24
 wp-env run cli wp option update mnti_schedule_unit hours

@@ -22,7 +22,7 @@ jobs:
       - name: Build zip
         env:
           VERSION: ${{ steps.version.outputs.VERSION }}
-        run: zip -r "modelo-nettytowpimport-${VERSION}.zip" modelo-nettytowpimport/
+        run: zip -r "modelo-netty-importer-${VERSION}.zip" modelo-netty-importer/
 
       - name: Create GitHub Release
         env:
@@ -33,4 +33,4 @@ jobs:
           gh release create "${TAG}" \
             --title "v${VERSION}" \
             --generate-notes \
-            "modelo-nettytowpimport-${VERSION}.zip"
+            "modelo-netty-importer-${VERSION}.zip"

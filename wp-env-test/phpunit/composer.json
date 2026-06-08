@@ -1,6 +1,6 @@
 {
-    "name": "ethersys/modelo-nettytowpimport-tests",
-    "description": "PHPUnit test suite for modelo-nettytowpimport",
+    "name": "ethersys/modelo-netty-importer-tests",
+    "description": "PHPUnit test suite for modelo-netty-importer",
     "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^10",

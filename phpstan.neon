@@ -6,8 +6,8 @@ parameters:
     maximumNumberOfProcesses: 1
   level: 5
   paths:
-    - modelo-nettytowpimport/includes
-    - modelo-nettytowpimport/modelo-nettytowpimport.php
+    - modelo-netty-importer/includes
+    - modelo-netty-importer/modelo-netty-importer.php
   bootstrapFiles:
     - vendor/szepeviktor/phpstan-wordpress/bootstrap.php
     - phpstan-bootstrap.php

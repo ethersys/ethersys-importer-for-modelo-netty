@@ -1,6 +1,6 @@
 # Environnement de test local
 
-Environnement Docker WordPress pour tester le plugin [Modelo-NettyToWPImport](https://github.com/ethersys/Modelo-NettyToWPImport) sans licence Houzez.
+Environnement Docker WordPress pour tester le plugin [Modelo-Netty-Importer](https://github.com/ethersys/Modelo-Netty-Importer) sans licence Houzez.
 
 ## Prérequis
 
@@ -52,7 +52,7 @@ wp-env clean all && bash test/setup.sh
 
 | Plugin | Rôle |
 |---|---|
-| `modelo-nettytowpimport` | Plugin testé |
+| `modelo-netty-importer` | Plugin testé |
 | `houzez-stub` | Remplace Houzez : post types, taxonomies, aperçu galerie |
 
 ## Accès admin

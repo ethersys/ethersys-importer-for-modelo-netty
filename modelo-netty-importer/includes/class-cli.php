@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -32,6 +32,10 @@ final class Cli {
 	 * @param array<string,mixed> $assoc_args
 	 */
 	public static function cmd_import( array $args, array $assoc_args ): void {
+		if ( function_exists( 'set_time_limit' ) ) {
+			@set_time_limit( 0 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Squiz.PHP.DiscouragedFunctions.Discouraged -- imports longs + sideload Imagick dépassent 30 s en CLI.
+		}
+
 		$dry_run   = (bool) ( $assoc_args['dry-run'] ?? false );
 		$no_delete = (bool) ( $assoc_args['no-delete'] ?? false );
 		$no_images = (bool) ( $assoc_args['no-images'] ?? false );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo/Netty to WP Import
+ * Modelo Netty Importer
  *
  * @package Modelo\NettyImport
  *
@@ -78,7 +78,7 @@ final class MediaSync {
 					continue;
 				}
 				$att_id = self::sideload_attachment( $run_id, $post_id, $reference_technique, $url, $tmp_or_error );
-				@unlink( $tmp_or_error );
+				wp_delete_file( $tmp_or_error );
 				if ( null === $att_id ) {
 					continue;
 				}
@@ -175,7 +175,7 @@ final class MediaSync {
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$filename     = wp_basename( parse_url( $url, PHP_URL_PATH ) ?: 'image.jpg' );
+		$filename     = wp_basename( wp_parse_url( $url, PHP_URL_PATH ) ?: 'image.jpg' );
 		$filetype     = wp_check_filetype_and_ext( $tmp_path, $filename );
 		$allowed_exts = [ 'jpg', 'jpeg', 'png', 'gif', 'webp' ];
 
@@ -290,7 +290,7 @@ final class MediaSync {
 				return;
 			}
 			$url    = (string) array_shift( $pending );
-			$scheme = strtolower( (string) parse_url( $url, PHP_URL_SCHEME ) );
+			$scheme = strtolower( (string) wp_parse_url( $url, PHP_URL_SCHEME ) );
 			if ( ! in_array( $scheme, [ 'http', 'https' ], true ) ) {
 				$results[ $url ] = new \WP_Error( 'invalid_scheme', sprintf( 'Schéma non autorisé : %s', $scheme ) );
 				return;
@@ -318,14 +318,14 @@ final class MediaSync {
 			$fp  = fopen( $tmp, 'wb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- écriture streaming vers fichier temp.
 			if ( false === $fp ) {
 				$results[ $url ] = new \WP_Error( 'fopen_failed', 'Impossible d\'ouvrir le fichier temporaire' );
-				@unlink( $tmp );
+				wp_delete_file( $tmp );
 				return;
 			}
 
 			$ch = curl_init( $request_url ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init -- WP HTTP API ne supporte pas le multi-curl.
 			if ( false === $ch ) {
-				fclose( $fp );
-				@unlink( $tmp );
+				fclose( $fp ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- fermeture du handle curl multi, WP_Filesystem non applicable ici.
+				wp_delete_file( $tmp );
 				$results[ $url ] = new \WP_Error( 'curl_init_failed', 'curl_init() a échoué' );
 				return;
 			}
@@ -379,11 +379,11 @@ final class MediaSync {
 				$id   = (int) $ch;
 				$meta = $active[ $id ];
 
-				fclose( $meta['fp'] );
+				fclose( $meta['fp'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- fermeture du handle curl multi, WP_Filesystem non applicable ici.
 				curl_multi_remove_handle( $mh, $ch ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_multi_remove_handle -- WP HTTP API ne supporte pas le multi-curl.
 
 				if ( CURLE_OK !== $info['result'] ) {
-					@unlink( $meta['tmp'] );
+					wp_delete_file( $meta['tmp'] );
 					if ( ( defined( 'CURLE_ABORTED_BY_CALLBACK' ) && CURLE_ABORTED_BY_CALLBACK === $info['result'] ) || CURLE_FILESIZE_EXCEEDED === $info['result'] ) {
 						$results[ $meta['url'] ] = new \WP_Error(
 							'file_too_large',
@@ -398,7 +398,7 @@ final class MediaSync {
 				} else {
 					$http_code = (int) curl_getinfo( $ch, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo -- WP HTTP API ne supporte pas le multi-curl.
 					if ( $http_code < 200 || $http_code >= 300 ) {
-						@unlink( $meta['tmp'] );
+						wp_delete_file( $meta['tmp'] );
 						$results[ $meta['url'] ] = new \WP_Error(
 							'http_error',
 							sprintf( 'HTTP %d', $http_code )

@@ -49,7 +49,7 @@ for i in "${!WP_VERSIONS[@]}"; do
   "core": "$WP_VERSION",
   "phpVersion": "$PHP_VERSION",
   "plugins": [
-    "../modelo-nettytowpimport",
+    "../modelo-netty-importer",
     "./houzez-stub"
   ],
   "themes": [],
@@ -63,7 +63,7 @@ for i in "${!WP_VERSIONS[@]}"; do
     "vendor": "../vendor",
     "phpunit.xml": "../phpunit.xml",
     "tests": "../tests",
-    "modelo-nettytowpimport": "../modelo-nettytowpimport"
+    "modelo-netty-importer": "../modelo-netty-importer"
   },
   "config": {
     "WPLANG": "fr_FR"

@@ -1,11 +1,11 @@
-# Modelo-Netty to WP Import
+# Modelo Netty Importer
 
-[![Changelog](https://img.shields.io/badge/changelog-view%20details-lightgrey?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/ethersys/Modelo-NettyToWPImport/blob/master/CHANGELOG.md)
-[![Release](https://img.shields.io/github/v/release/ethersys/Modelo-NettyToWPImport?style=flat-square&color=blue)](https://github.com/ethersys/Modelo-NettyToWPImport/releases)
-[![License](https://img.shields.io/badge/license-GPL--2.0-orange?style=flat-square)](https://github.com/ethersys/Modelo-NettyToWPImport/blob/master/LICENSE)
+[![Changelog](https://img.shields.io/badge/changelog-view%20details-lightgrey?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/ethersys/Modelo-Netty-Importer/blob/master/CHANGELOG.md)
+[![Release](https://img.shields.io/github/v/release/ethersys/Modelo-Netty-Importer?style=flat-square&color=blue)](https://github.com/ethersys/Modelo-Netty-Importer/releases)
+[![License](https://img.shields.io/badge/license-GPL--2.0-orange?style=flat-square)](https://github.com/ethersys/Modelo-Netty-Importer/blob/master/LICENSE)
 ![WordPress](https://img.shields.io/badge/WordPress-6.8+-21759b?style=flat-square&logo=wordpress&logoColor=white)
-![Last Commit](https://img.shields.io/github/last-commit/ethersys/Modelo-NettyToWPImport/master?style=flat-square)
-[![Issues](https://img.shields.io/github/issues/ethersys/Modelo-NettyToWPImport?style=flat-square&color=44cc11)](https://github.com/ethersys/Modelo-NettyToWPImport/issues)
+![Last Commit](https://img.shields.io/github/last-commit/ethersys/Modelo-Netty-Importer/master?style=flat-square)
+[![Issues](https://img.shields.io/github/issues/ethersys/Modelo-Netty-Importer?style=flat-square&color=44cc11)](https://github.com/ethersys/Modelo-Netty-Importer/issues)
 
 Cette extension permet de lire le flux généré par le logiciel Modelo&copy; (ex Netty&copy;) édité par Septeo&copy; et d'importer les biens en location et vente dans WordPress.
 
@@ -37,7 +37,7 @@ Pour l’**affichage réglementaire DPE / GES** (diagrammes, détails au-delà d
 
 ## Installation rapide
 
-1. Copier le dossier `modelo-nettytowpimport` dans `wp-content/plugins/`.
+1. Copier le dossier `modelo-netty-importer` dans `wp-content/plugins/`.
 2. Activer le plugin dans **Extensions**.
 3. Régler **Import Netty** dans le menu d’administration (URL du flux, fréquence, agent).
 
@@ -55,7 +55,7 @@ Sans thème **Houzez** (ou sans type de contenu / métas compatibles), l’impor
 | Couche | Rôle |
 |--------|------|
 | **Netty → flux XML** | Source des annonces, photos, données énergie / GES et financières. |
-| **Netty to WP Import** | Télécharge le flux, parse le XML, crée / met à jour / supprime les annonces, synchronise les médias, journalise les exécutions, planifie les imports. |
+| **Modelo Netty Importer** | Télécharge le flux, parse le XML, crée / met à jour / supprime les annonces, synchronise les médias, journalise les exécutions, planifie les imports. |
 | **Houzez** | Thème et métadonnées `fave_*` pour listes, fiches, agents, recherche. |
 | **Extension DPE/GES (`[immowp_dpe_ges]`)** | Rendu détaillé du diagnostic sur la fiche bien, alimenté par les métas écrites à l’import. |
 
@@ -126,4 +126,4 @@ GPLv2 ou ultérieure (comme WordPress). Voir le fichier [`LICENSE`](LICENSE) à 
 
 ## Contribuer
 
-Les contributions sont les bienvenues sur [GitHub](https://github.com/ethersys/Modelo-NettyToWPImport). Voir [`CONTRIBUTING.md`](CONTRIBUTING.md) pour le workflow, les conventions de code et la procédure de test.
+Les contributions sont les bienvenues sur [GitHub](https://github.com/ethersys/Modelo-Netty-Importer). Voir [`CONTRIBUTING.md`](CONTRIBUTING.md) pour le workflow, les conventions de code et la procédure de test.

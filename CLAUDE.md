@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Nature du dépôt
 
-Dépôt GitHub : https://github.com/ethersys/Modelo-NettyToWPImport
+Dépôt GitHub : git@github.com:ethersys/Modelo-Netty-Importer.git
 
-Plugin WordPress mono-paquet (PHP 8.3+). Le code source distribuable est intégralement dans `modelo-nettytowpimport/` ; le dossier doit être copié tel quel dans `wp-content/plugins/`. Pas de build, pas de bundler, pas de gestionnaire de dépendances (PHP ou JS) — tout est en PHP natif + un script inline pour le front DPE/GES.
+Plugin WordPress mono-paquet (PHP 8.3+). Le code source distribuable est intégralement dans `modelo-netty-importer/` ; le dossier doit être copié tel quel dans `wp-content/plugins/`. Pas de build, pas de bundler, pas de gestionnaire de dépendances (PHP ou JS) — tout est en PHP natif + un script inline pour le front DPE/GES.
 
 ## Commandes utiles
 
@@ -43,20 +43,20 @@ Pour validation manuelle : installer le plugin dans un WordPress local + thème 
 ### Packager pour distribution
 
 ```bash
-# Le .gitignore exclut déjà les zips. Le zip doit contenir le dossier "modelo-nettytowpimport/"
+# Le .gitignore exclut déjà les zips. Le zip doit contenir le dossier "modelo-netty-importer/"
 # à la racine pour que WordPress le reconnaisse.
-(cd modelo-nettytowpimport && zip -r ../modelo-nettytowpimport.zip .)
+(cd modelo-netty-importer && zip -r ../modelo-netty-importer.zip .)
 ```
 
 ### Traductions
 
-Fichiers dans `modelo-nettytowpimport/languages/` : `netty-houzez-importer.pot` (template) et `netty-houzez-importer-fr_FR.po`. Le text domain réel utilisé en code est `modelo-nettytowpimport` (constante `Plugin::TEXT_DOMAIN`). Régénérer avec `wp i18n make-pot netty-to-wp-import modelo-nettytowpimport/languages/netty-houzez-importer.pot --domain=modelo-nettytowpimport`.
+Fichiers dans `modelo-netty-importer/languages/` : `netty-houzez-importer.pot` (template) et `netty-houzez-importer-fr_FR.po`. Le text domain réel utilisé en code est `modelo-netty-importer` (constante `Plugin::TEXT_DOMAIN`). Régénérer avec `wp i18n make-pot netty-to-wp-import modelo-netty-importer/languages/netty-houzez-importer.pot --domain=modelo-netty-importer`.
 
 ## Architecture
 
 ### Bootstrap
 
-`modelo-nettytowpimport.php` définit les constantes `MNTI_VERSION`, `MNTI_PATH`, `MNTI_URL`, `MNTI_BASENAME` puis délègue à `Plugin::init()` (dans `includes/class-plugin.php`). `Plugin::init()` charge tous les `class-*.php` du dossier `includes/` puis appelle `::init()` sur chaque sous-système. Les hooks d’activation/désactivation y sont aussi enregistrés (création de tables + (re)programmation cron).
+`modelo-netty-importer.php` définit les constantes `MNTI_VERSION`, `MNTI_PATH`, `MNTI_URL`, `MNTI_BASENAME` puis délègue à `Plugin::init()` (dans `includes/class-plugin.php`). `Plugin::init()` charge tous les `class-*.php` du dossier `includes/` puis appelle `::init()` sur chaque sous-système. Les hooks d’activation/désactivation y sont aussi enregistrés (création de tables + (re)programmation cron).
 
 Tout le code vit dans le namespace `NettyWP\Import`. Préfixe pour les options, hooks, transients, tables : `mnti_`.
 

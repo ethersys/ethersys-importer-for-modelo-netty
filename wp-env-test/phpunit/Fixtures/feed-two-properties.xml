@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flux>
+  <bien>
+    <reference_technique>REF-001</reference_technique>
+    <type_annonce>location</type_annonce>
+    <type_prod>Appartement</type_prod>
+    <titre>Appartement A</titre>
+    <ville>Lyon</ville>
+    <loyer>800</loyer>
+  </bien>
+  <bien>
+    <reference_technique>REF-002</reference_technique>
+    <type_annonce>vente</type_annonce>
+    <type_prod>Maison</type_prod>
+    <titre>Maison B</titre>
+    <ville>Paris</ville>
+    <prix>250000</prix>
+  </bien>
+</flux>

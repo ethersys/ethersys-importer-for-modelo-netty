@@ -1,0 +1,12 @@
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.zip
+.claude/
+vendor/
+wp-env-test/.env
+.phpunit.cache/
+wp-env-test/phpunit/.phpunit.result.cache
+docs/
+.serena/

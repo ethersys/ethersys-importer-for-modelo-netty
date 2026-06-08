@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flux>
+  <bien>
+    <reference_technique>REF-001</reference_technique>
+    <type_annonce>location</type_annonce>
+    <type_prod>Appartement</type_prod>
+    <titre>Appartement test</titre>
+    <description>Un appartement lumineux</description>
+    <ville>Lyon</ville>
+    <code_postal>69001</code_postal>
+    <surface_habitable>45</surface_habitable>
+    <nb_piece>2</nb_piece>
+    <nb_chambre>1</nb_chambre>
+    <nb_sdb>1</nb_sdb>
+    <nb_sde>0</nb_sde>
+    <loyer>800</loyer>
+    <charges>50</charges>
+  </bien>
+</flux>

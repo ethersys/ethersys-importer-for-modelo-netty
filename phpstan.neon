@@ -1,0 +1,15 @@
+includes:
+  - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+  parallel:
+    maximumNumberOfProcesses: 1
+  level: 5
+  paths:
+    - modelo-nettytowpimport/includes
+    - modelo-nettytowpimport/modelo-nettytowpimport.php
+  bootstrapFiles:
+    - vendor/szepeviktor/phpstan-wordpress/bootstrap.php
+    - phpstan-bootstrap.php
+  ignoreErrors:
+    - '#Call to static method (add_command|success|log|line|warning|error)\(\) on an unknown class WP_CLI#'

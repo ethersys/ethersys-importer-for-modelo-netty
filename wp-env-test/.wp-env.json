@@ -1,0 +1,25 @@
+{
+  "core": null,
+  "phpVersion": "8.3",
+  "plugins": [
+    "../modelo-nettytowpimport",
+    "./houzez-stub"
+  ],
+  "themes": [],
+  "mappings": {
+    "wp-content/mnti-tests": "./phpunit",
+    ".phpcs.xml": "../.phpcs.xml",
+    "phpstan.neon": "../phpstan.neon",
+    "phpstan-bootstrap.php": "../phpstan-bootstrap.php",
+    "composer.json": "../composer.json",
+    "composer.lock": "../composer.lock",
+    "vendor": "../vendor",
+    "phpunit.xml": "../phpunit.xml",
+    "tests": "../tests",
+    "modelo-nettytowpimport": "../modelo-nettytowpimport"
+  },
+  "config": {
+    "WPLANG": "fr_FR"
+  },
+  "testsEnvironment": false
+}

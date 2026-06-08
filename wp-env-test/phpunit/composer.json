@@ -1,0 +1,20 @@
+{
+    "name": "ethersys/modelo-nettytowpimport-tests",
+    "description": "PHPUnit test suite for modelo-nettytowpimport",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^10",
+        "brain/monkey": "^2"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modelo\\NettyImport\\Tests\\": "./"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false
+        }
+    }
+}

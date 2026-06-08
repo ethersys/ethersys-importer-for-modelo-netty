@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<ruleset name="Modelo NettyToWPImport">
+  <rule ref="WordPress-Core">
+    <!-- Short array syntax [] est le style du projet (WPCS impose array() par défaut) -->
+    <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    <!-- Style constant dans le projet -->
+    <exclude name="WordPress.PHP.YodaConditions"/>
+    <exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement"/>
+    <exclude name="Universal.Operators.DisallowShortTernary"/>
+    <exclude name="Generic.CodeAnalysis.AssignmentInCondition"/>
+    <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+  </rule>
+  <!-- Impose [] au lieu de array() pour cohérence avec le code existant -->
+  <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+  <rule ref="WordPress.Security"/>
+  <arg name="extensions" value="php"/>
+  <arg value="sp"/>
+  <config name="minimum_supported_wp_version" value="6.0"/>
+  <config name="testVersion" value="8.0-"/>
+
+  <!-- Pas de docblocks dans cette base de code -->
+  <rule ref="Squiz.Commenting.ClassComment.Missing">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.Missing">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.ParamNameNoMatch">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.IncorrectTypeHint">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionComment.ParamCommentFullStop">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Squiz.Commenting.VariableComment.Missing">
+    <severity>0</severity>
+  </rule>
+  <rule ref="Generic.Commenting.DocComment.MissingShort">
+    <severity>0</severity>
+  </rule>
+</ruleset>

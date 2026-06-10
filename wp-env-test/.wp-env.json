@@ -19,7 +19,9 @@
     "modelo-netty-importer": "../modelo-netty-importer"
   },
   "config": {
-    "WPLANG": "fr_FR"
+    "WPLANG": "fr_FR",
+    "WP_DEBUG": true,
+    "WP_DEBUG_LOG": true
   },
   "testsEnvironment": false
 }

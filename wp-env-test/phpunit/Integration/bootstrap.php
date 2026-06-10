@@ -24,4 +24,4 @@ require $wp_load;
 \Ethersys\NettyImport\Db::create_tables();
 
 // Constante pour les fixtures (chemin dans le container Docker).
-define('EIMN_FIXTURE_DIR', '/var/www/html/wp-content/mnti-tests/Fixtures');
+define('EIMN_FIXTURE_DIR', '/var/www/html/wp-content/eimn-tests/Fixtures');

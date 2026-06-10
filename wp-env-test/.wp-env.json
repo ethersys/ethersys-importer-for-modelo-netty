@@ -2,12 +2,12 @@
   "core": "https://downloads.wordpress.org/release/wordpress-6.8.5.zip",
   "phpVersion": "8.3",
   "plugins": [
-    "../modelo-netty-importer",
+    "../ethersys-importer-for-modelo-netty",
     "./houzez-stub"
   ],
   "themes": [],
   "mappings": {
-    "wp-content/mnti-tests": "./phpunit",
+    "wp-content/eimn-tests": "./phpunit",
     ".phpcs.xml": "../.phpcs.xml",
     "phpstan.neon": "../phpstan.neon",
     "phpstan-bootstrap.php": "../phpstan-bootstrap.php",
@@ -16,7 +16,7 @@
     "vendor": "../vendor",
     "phpunit.xml": "../phpunit.xml",
     "tests": "../tests",
-    "modelo-netty-importer": "../modelo-netty-importer"
+    "ethersys-importer-for-modelo-netty": "../ethersys-importer-for-modelo-netty"
   },
   "config": {
     "WPLANG": "fr_FR",

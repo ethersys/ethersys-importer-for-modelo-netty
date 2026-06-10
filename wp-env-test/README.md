@@ -1,6 +1,6 @@
 # Environnement de test local
 
-Environnement Docker WordPress pour tester le plugin [Modelo-Netty-Importer](https://github.com/ethersys/Modelo-Netty-Importer) sans licence Houzez.
+Environnement Docker WordPress pour tester le plugin [ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty) sans licence Houzez.
 
 ## Prérequis
 
@@ -85,7 +85,7 @@ cd test/phpunit && composer install
 ### Tests unitaires (via wp-env Docker)
 
 ```bash
-cd test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendor/bin/phpunit -c /var/www/html/wp-content/mnti-tests/phpunit.unit.xml --testdox"
+cd test && wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.unit.xml --testdox"
 ```
 
 ### Tests d'intégration (WordPress via wp-env)
@@ -93,7 +93,7 @@ cd test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendo
 wp-env doit être démarré (`bash setup.sh` ou `wp-env start`).
 
 ```bash
-cd wp-env-test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendor/bin/phpunit -c /var/www/html/wp-content/mnti-tests/phpunit.integration.xml --testdox"
+cd wp-env-test && wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.integration.xml --testdox"
 ```
 
 > ⚠️ **Les tests d'intégration tournent sur la base wp-env réelle** (`"testsEnvironment": false`). Leur teardown **efface les options du plugin** (dont `eimn_feed_url`, `eimn_schedule_*`). Après une passe de tests d'intégration, relancer `bash setup.sh` pour restaurer les réglages depuis `.env`.
@@ -102,10 +102,10 @@ cd wp-env-test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-test
 
 ```bash
 # Unit
-cd test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendor/bin/phpunit -c /var/www/html/wp-content/mnti-tests/phpunit.unit.xml --filter XmlParserTest --testdox"
+cd test && wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.unit.xml --filter XmlParserTest --testdox"
 
 # Integration
-cd test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendor/bin/phpunit -c /var/www/html/wp-content/mnti-tests/phpunit.integration.xml --filter ImporterIntegrationTest --testdox"
+cd test && wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.integration.xml --filter ImporterIntegrationTest --testdox"
 ```
 
 ### Structure

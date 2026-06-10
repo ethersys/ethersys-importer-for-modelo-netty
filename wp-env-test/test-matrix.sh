@@ -49,12 +49,12 @@ for i in "${!WP_VERSIONS[@]}"; do
   "core": "$WP_VERSION",
   "phpVersion": "$PHP_VERSION",
   "plugins": [
-    "../modelo-netty-importer",
+    "../ethersys-importer-for-modelo-netty",
     "./houzez-stub"
   ],
   "themes": [],
   "mappings": {
-    "wp-content/mnti-tests": "./phpunit",
+    "wp-content/eimn-tests": "./phpunit",
     ".phpcs.xml": "../.phpcs.xml",
     "phpstan.neon": "../phpstan.neon",
     "phpstan-bootstrap.php": "../phpstan-bootstrap.php",
@@ -63,10 +63,12 @@ for i in "${!WP_VERSIONS[@]}"; do
     "vendor": "../vendor",
     "phpunit.xml": "../phpunit.xml",
     "tests": "../tests",
-    "modelo-netty-importer": "../modelo-netty-importer"
+    "ethersys-importer-for-modelo-netty": "../ethersys-importer-for-modelo-netty"
   },
   "config": {
-    "WPLANG": "fr_FR"
+    "WPLANG": "fr_FR",
+    "WP_DEBUG": true,
+    "WP_DEBUG_LOG": true
   },
   "testsEnvironment": false
 }

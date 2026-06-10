@@ -24,8 +24,8 @@ composer test
 
 ```bash
 cd wp-env-test
-wp-env reset --yes
 wp-env start
+wp-env reset --yes
 sleep 15
 wp-env run cli bash -c "cd /var/www/html && vendor/bin/phpunit"
 wp-env stop

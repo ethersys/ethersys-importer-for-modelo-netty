@@ -10,10 +10,13 @@ NC='\033[0m'
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 REPO_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
+# Refs git WordPress/WordPress#X.Y.Z : les URLs zip cassent la résolution
+# d'image Docker de wp-env (basename "wordpress-6.8.5" tronqué en "wordpress-6",
+# collision de cache entre versions 6.x). Voir commit 2efa024.
 WP_VERSIONS=(
-  "https://downloads.wordpress.org/release/wordpress-6.8.5.zip"
-  "https://downloads.wordpress.org/release/wordpress-6.9.4.zip"
-  "https://downloads.wordpress.org/release/wordpress-7.0.zip"
+  "WordPress/WordPress#6.8.5"
+  "WordPress/WordPress#6.9.4"
+  "WordPress/WordPress#7.0"
 )
 WP_LABELS=("6.8.5" "6.9.4" "7.0")
 PHP_VERSIONS=("8.3" "8.4" "8.5")
@@ -42,48 +45,23 @@ for i in "${!WP_VERSIONS[@]}"; do
     COMBO="WP $WP_LABEL + PHP $PHP_VERSION"
     echo -e "${YELLOW}▶ Testing $COMBO${NC}"
 
-    # Create temp config
-    TEMP_CONFIG=$(mktemp)
-    cat > "$TEMP_CONFIG" << EOF
-{
-  "core": "$WP_VERSION",
-  "phpVersion": "$PHP_VERSION",
-  "plugins": [
-    "../ethersys-importer-for-modelo-netty",
-    "./houzez-stub"
-  ],
-  "themes": [],
-  "mappings": {
-    "wp-content/eimn-tests": "./phpunit",
-    ".phpcs.xml": "../.phpcs.xml",
-    "phpstan.neon": "../phpstan.neon",
-    "phpstan-bootstrap.php": "../phpstan-bootstrap.php",
-    "composer.json": "../composer.json",
-    "composer.lock": "../composer.lock",
-    "vendor": "../vendor",
-    "phpunit.xml": "../phpunit.xml",
-    "tests": "../tests",
-    "ethersys-importer-for-modelo-netty": "../ethersys-importer-for-modelo-netty"
-  },
-  "config": {
-    "WPLANG": "fr_FR",
-    "WP_DEBUG": true,
-    "WP_DEBUG_LOG": true
-  },
-  "testsEnvironment": false
-}
-EOF
-
-    cp "$SCRIPT_DIR/.wp-env.json" "$SCRIPT_DIR/.wp-env.json.bak"
-    cp "$TEMP_CONFIG" "$SCRIPT_DIR/.wp-env.json"
-
+    # Override par variables d'environnement : .wp-env.json n'est jamais
+    # modifié (l'ancien mécanisme temp-config + .bak laissait une config
+    # cassée en cas d'interruption).
     if (
       cd "$SCRIPT_DIR"
-      wp-env reset --yes 2>&1 >/dev/null
-      wp-env start 2>&1 >/dev/null
+      export WP_ENV_CORE="$WP_VERSION"
+      export WP_ENV_PHP_VERSION="$PHP_VERSION"
+      wp-env reset --yes >/dev/null 2>&1
+      wp-env start >/dev/null 2>&1
       sleep 15
-      wp-env run cli bash -c "cd /var/www/html && vendor/bin/phpunit" 2>&1 | grep -E "OK|FAILED" || true
-      wp-env stop 2>&1 >/dev/null
+      # Le statut du combo = exit code phpunit (l'ancien grep "OK|FAILED"
+      # suivi de || true marquait PASSED même avec des tests en échec).
+      RESULT=$(wp-env run cli bash -c "cd /var/www/html && vendor/bin/phpunit" 2>&1)
+      STATUS=$?
+      echo "$RESULT" | grep -E "^(OK|FAILURES|ERRORS|Tests:)" || true
+      wp-env stop >/dev/null 2>&1
+      [ "$STATUS" -eq 0 ]
     ); then
       echo -e "  ${GREEN}✓ PASSED${NC}\n"
       PASSED_COMBOS+=("$COMBO")
@@ -91,9 +69,6 @@ EOF
       echo -e "  ${RED}✗ FAILED${NC}\n"
       FAILED_COMBOS+=("$COMBO")
     fi
-
-    cp "$SCRIPT_DIR/.wp-env.json.bak" "$SCRIPT_DIR/.wp-env.json"
-    rm -f "$SCRIPT_DIR/.wp-env.json.bak" "$TEMP_CONFIG"
   done
 done
 

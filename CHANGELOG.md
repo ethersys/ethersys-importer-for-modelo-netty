@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1] - 2026-06-10
+
+### Corrections
+
+- **Plugin URI** : corrigé dans l'en-tête PHP (URL GitHub incorrecte après le renommage 1.2.0)
+- **`wp-env-test/.wp-env.json`** : core WordPress épinglé à `6.8.5`, suppression de `WP_DEBUG` / `WP_DEBUG_LOG` de la config
+
 ## [1.2.0] - 2026-06-10
 
 Renommage complet du projet et correction de sécurité.

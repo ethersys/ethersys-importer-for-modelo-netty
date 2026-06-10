@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Modelo Netty Importer">
+<ruleset name="Ethersys Importer For Modelo Netty">
   <rule ref="WordPress-Core">
     <!-- Short array syntax [] est le style du projet (WPCS impose array() par défaut) -->
     <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>

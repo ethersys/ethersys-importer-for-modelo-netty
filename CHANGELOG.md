@@ -1,12 +1,27 @@
 # Changelog
 
+## [1.2.0] - 2026-06-10
+
+Renommage complet du projet et correction de sécurité.
+
+### Changements
+
+- **Renommage** : nom affiché `Modelo Netty Importer` → `Ethersys Importer For Modelo Netty`
+- **Slug/dossier** : `modelo-netty-importer/` → `ethersys-importer-for-modelo-netty/`
+- **Namespace PHP** : `Modelo\NettyImport` → `Ethersys\NettyImport`
+- **Préfixe options / hooks / tables DB** : `mnti_` → `eimn_` *(breaking change pour les installations existantes)*
+- **Commande WP-CLI** : `wp mnti import` → `wp eimn import` *(breaking change)*
+- **Remote Git** : `ethersys/Modelo-Netty-Importer` → `ethersys/ethersys-importer-for-modelo-netty`
+- **Sécurité** : application de `wp_kses_post()` sur le champ `description` du flux avant insertion en `post_content` (protection XSS contre un flux compromis)
+- Correction du nom dans `readme.txt` pour correspondre à l'en-tête PHP
+
 ## [1.1.0] - 2026-06-08
 
 Préparation pour le répertoire WordPress Plugin Directory.
 
 ### Changements
 
-- Renommage du dossier plugin : `modelo-nettytowpimport/` → `modelo-netty-importer/`
+- Renommage du dossier plugin : `modelo-nettytowpimport/` → `ethersys-importer-for-modelo-netty/`
 - Ajout de `readme.txt` (format requis par le répertoire WordPress)
 - Correction du `Plugin URI` dans l'en-tête du plugin principal
 - Mise à jour du workflow CI (`release.yml`) pour produire le zip avec le nouveau nom

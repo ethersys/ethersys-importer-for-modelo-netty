@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,17 +14,17 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Importer {
 	public const META_REF                = 'nh_reference_technique';
 	public const META_COMPLETE_AT        = 'nh_import_complete_at';
-	private const OPT_DEFAULT_AGENT_ID   = 'mnti_default_agent_id';
-	private const OPT_FEED_ETAG          = 'mnti_feed_etag';
-	private const OPT_FEED_LAST_MODIFIED = 'mnti_feed_last_modified';
-	private const LOCK_OPTION            = 'mnti_import_lock';
+	private const OPT_DEFAULT_AGENT_ID   = 'eimn_default_agent_id';
+	private const OPT_FEED_ETAG          = 'eimn_feed_etag';
+	private const OPT_FEED_LAST_MODIFIED = 'eimn_feed_last_modified';
+	private const LOCK_OPTION            = 'eimn_import_lock';
 	private const STALE_RUN_MINS         = 30;
 
 	private static bool $during_import = false;
@@ -33,7 +33,7 @@ final class Importer {
 	 * URL du flux Netty (réglage admin). Ne jamais coder d’URL secrète dans le dépôt.
 	 */
 	public static function get_feed_url(): string {
-		return esc_url_raw( trim( (string) get_option( 'mnti_feed_url', '' ) ), [ 'http', 'https' ] );
+		return esc_url_raw( trim( (string) get_option( 'eimn_feed_url', '' ) ), [ 'http', 'https' ] );
 	}
 
 	public static function is_feed_configured(): bool {
@@ -74,9 +74,9 @@ final class Importer {
 
 		if ( ! self::is_feed_configured() ) {
 			$run_id = Logger::start_run( '' );
-			Logger::log_error( $run_id, 'no_feed_url', __( 'URL du flux XML non configurée (réglages du plugin).', 'modelo-netty-importer' ) );
+			Logger::log_error( $run_id, 'no_feed_url', __( 'URL du flux XML non configurée (réglages du plugin).', 'ethersys-importer-for-modelo-netty' ) );
 			++$counts['errors'];
-			Logger::finish_run_failed( $run_id, __( 'URL du flux non configurée', 'modelo-netty-importer' ), $counts );
+			Logger::finish_run_failed( $run_id, __( 'URL du flux non configurée', 'ethersys-importer-for-modelo-netty' ), $counts );
 			return [
 				'run_id' => $run_id,
 				'counts' => $counts,
@@ -92,8 +92,8 @@ final class Importer {
 
 		// 2. Verrou atomique
 		if ( ! add_option( self::LOCK_OPTION, $run_id, '', false ) ) {
-			Logger::log_error( $run_id, 'locked', __( 'Import déjà en cours (verrou actif).', 'modelo-netty-importer' ) );
-			Logger::finish_run_failed( $run_id, __( 'Import déjà en cours', 'modelo-netty-importer' ), $counts );
+			Logger::log_error( $run_id, 'locked', __( 'Import déjà en cours (verrou actif).', 'ethersys-importer-for-modelo-netty' ) );
+			Logger::finish_run_failed( $run_id, __( 'Import déjà en cours', 'ethersys-importer-for-modelo-netty' ), $counts );
 			return [
 				'run_id' => $run_id,
 				'counts' => $counts,
@@ -234,7 +234,7 @@ final class Importer {
 			 * @param array<string,int> $counts           Compteurs du run.
 			 * @param int[]             $touched_post_ids  IDs des biens créés/maj/supprimés.
 			 */
-			do_action( 'mnti_after_import', $counts, array_keys( $touched_post_ids ) );
+			do_action( 'eimn_after_import', $counts, array_keys( $touched_post_ids ) );
 		} catch ( \Throwable $e ) {
 			++$counts['errors'];
 			Logger::log_error( $run_id, 'run_failed', $e->getMessage(), [ 'trace' => $e->getTraceAsString() ] );
@@ -277,7 +277,7 @@ final class Importer {
 		global $wpdb;
 		$runs_table = Db::runs_table();
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- UPDATE on custom table; table name from Db::runs_table(), not user input.
-		$affected   = $wpdb->query(
+		$affected = $wpdb->query(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name from Db::runs_table(), not user input.
 				"UPDATE {$runs_table}
@@ -299,11 +299,11 @@ final class Importer {
 		$url = self::get_feed_url();
 		if ( ! self::is_feed_configured() ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- exception message, not rendered output.
-			throw new \RuntimeException( __( 'URL du flux invalide ou vide.', 'modelo-netty-importer' ) );
+			throw new \RuntimeException( __( 'URL du flux invalide ou vide.', 'ethersys-importer-for-modelo-netty' ) );
 		}
 
 		$headers = [
-			'User-Agent' => 'Modelo-Netty-Importer/' . MNTI_VERSION,
+			'User-Agent' => 'Modelo-Netty-Importer/' . EIMN_VERSION,
 		];
 
 		$etag          = (string) get_option( self::OPT_FEED_ETAG, '' );
@@ -388,7 +388,7 @@ final class Importer {
 	private static function upsert_property( int $run_id, int $post_id, array $rec ): int {
 		$ref = (string) $rec['reference_technique'];
 
-		$raw_content = (string) ( $rec['description'] ?? '' );
+		$raw_content = wp_kses_post( (string) ( $rec['description'] ?? '' ) );
 		// Nettoyage léger pour améliorer l’affichage des interlignes:
 		// - le flux contient des <br> (souvent en série). On les convertit en sauts de ligne,
 		// puis on laisse WordPress générer les paragraphes via wpautop.

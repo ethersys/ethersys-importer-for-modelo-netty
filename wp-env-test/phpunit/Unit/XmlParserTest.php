@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Unit;
+namespace Ethersys\NettyImport\Tests\Unit;
 
-use Modelo\NettyImport\Tests\UnitTestCase;
-use Modelo\NettyImport\XmlParser;
+use Ethersys\NettyImport\Tests\UnitTestCase;
+use Ethersys\NettyImport\XmlParser;
 
 class XmlParserTest extends UnitTestCase
 {

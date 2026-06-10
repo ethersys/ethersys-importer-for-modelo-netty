@@ -11,7 +11,7 @@
   </testsuites>
   <source>
     <include>
-      <directory>modelo-netty-importer/includes</directory>
+      <directory>ethersys-importer-for-modelo-netty/includes</directory>
     </include>
   </source>
 </phpunit>

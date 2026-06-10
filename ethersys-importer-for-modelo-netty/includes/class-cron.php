@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,21 +14,21 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Cron {
-	public const SCHEDULE_RECURRENCE = 'mnti_import_recurrence';
-	private const EVENT_HOOK         = 'mnti_import_event';
-	private const PURGE_HOOK         = 'mnti_import_purge_event';
-	private const PURGE_SCHEDULE     = 'mnti_purge_daily';
+	public const SCHEDULE_RECURRENCE = 'eimn_import_recurrence';
+	private const EVENT_HOOK         = 'eimn_import_event';
+	private const PURGE_HOOK         = 'eimn_import_purge_event';
+	private const PURGE_SCHEDULE     = 'eimn_purge_daily';
 
 	public static function init(): void {
 		add_filter( 'cron_schedules', [ __CLASS__, 'add_schedules' ] );
 		add_action( self::EVENT_HOOK, [ __CLASS__, 'handle_import' ] );
 		add_action( self::PURGE_HOOK, [ __CLASS__, 'handle_purge' ] );
-		add_action( 'mnti_import_oneshot', [ __CLASS__, 'handle_import' ] );
+		add_action( 'eimn_import_oneshot', [ __CLASS__, 'handle_import' ] );
 	}
 
 	public static function add_schedules( array $schedules ): array {
@@ -40,13 +40,13 @@ final class Cron {
 		$schedules[ self::SCHEDULE_RECURRENCE ] = [
 			'interval' => $interval,
 			/* translators: %s: interval in seconds (debug / cron list) */
-			'display'  => sprintf( __( 'Import Immo (intervalle : %d s)', 'modelo-netty-importer' ), $interval ),
+			'display'  => sprintf( __( 'Import Immo (intervalle : %d s)', 'ethersys-importer-for-modelo-netty' ), $interval ),
 		];
 
 		if ( ! isset( $schedules[ self::PURGE_SCHEDULE ] ) ) {
 			$schedules[ self::PURGE_SCHEDULE ] = [
 				'interval' => DAY_IN_SECONDS,
-				'display'  => __( 'Quotidien (nettoyage des logs Netty)', 'modelo-netty-importer' ),
+				'display'  => __( 'Quotidien (nettoyage des logs Netty)', 'ethersys-importer-for-modelo-netty' ),
 			];
 		}
 
@@ -57,9 +57,9 @@ final class Cron {
 	 * Intervalle WP-Cron pour l’import principal (lecture des options).
 	 */
 	public static function get_interval_seconds_from_options(): int {
-		$n    = (int) get_option( 'mnti_schedule_interval', 6 );
+		$n    = (int) get_option( 'eimn_schedule_interval', 6 );
 		$n    = max( 1, min( 999, $n ) );
-		$unit = (string) get_option( 'mnti_schedule_unit', 'hour' );
+		$unit = (string) get_option( 'eimn_schedule_unit', 'hour' );
 		if ( ! in_array( $unit, [ 'minute', 'hour', 'day' ], true ) ) {
 			$unit = 'hour';
 		}

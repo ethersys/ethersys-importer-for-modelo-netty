@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Integration;
+namespace Ethersys\NettyImport\Tests\Integration;
 
-use Modelo\NettyImport\Db;
+use Ethersys\NettyImport\Db;
 
 class DbIntegrationTest extends WPTestCase
 {

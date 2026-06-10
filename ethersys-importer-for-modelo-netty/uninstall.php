@@ -8,7 +8,7 @@
  * postmeta ne sont PAS supprimés (le catalogue est conservé) : la
  * désinstallation ne doit pas détruire le contenu éditorial.
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -26,49 +26,49 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 /**
  * Purge les tables, options et crons pour le blog courant.
  */
-function mnti_uninstall_cleanup(): void {
+function eimn_uninstall_cleanup(): void {
 	global $wpdb;
 
 	// Tables custom (noms construits comme dans Db::runs_table()/logs_table()).
-	$runs_table = $wpdb->prefix . 'mnti_import_runs';
-	$logs_table = $wpdb->prefix . 'mnti_import_logs';
+	$runs_table = $wpdb->prefix . 'eimn_import_runs';
+	$logs_table = $wpdb->prefix . 'eimn_import_logs';
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DROP TABLE lors de la désinstallation ; noms de tables internes, pas de saisie utilisateur.
 	$wpdb->query( "DROP TABLE IF EXISTS {$logs_table}" );
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- DROP TABLE lors de la désinstallation ; noms de tables internes, pas de saisie utilisateur.
 	$wpdb->query( "DROP TABLE IF EXISTS {$runs_table}" );
 
-	// Options (mnti_feed_url peut contenir un token d'accès).
+	// Options (eimn_feed_url peut contenir un token d'accès).
 	$options = [
-		'mnti_feed_url',
-		'mnti_feed_etag',
-		'mnti_feed_last_modified',
-		'mnti_schedule_interval',
-		'mnti_schedule_unit',
-		'mnti_default_agent_id',
-		'mnti_import_lock',
+		'eimn_feed_url',
+		'eimn_feed_etag',
+		'eimn_feed_last_modified',
+		'eimn_schedule_interval',
+		'eimn_schedule_unit',
+		'eimn_default_agent_id',
+		'eimn_import_lock',
 	];
 	foreach ( $options as $option ) {
 		delete_option( $option );
 	}
 
 	// Événements cron résiduels (normalement déjà nettoyés à la désactivation).
-	wp_clear_scheduled_hook( 'mnti_import_event' );
-	wp_clear_scheduled_hook( 'mnti_import_purge_event' );
-	wp_clear_scheduled_hook( 'mnti_import_oneshot' );
+	wp_clear_scheduled_hook( 'eimn_import_event' );
+	wp_clear_scheduled_hook( 'eimn_import_purge_event' );
+	wp_clear_scheduled_hook( 'eimn_import_oneshot' );
 }
 
 if ( is_multisite() ) {
-	$mnti_site_ids = get_sites(
+	$eimn_site_ids = get_sites(
 		[
 			'fields' => 'ids',
 			'number' => 0,
 		]
 	);
-	foreach ( $mnti_site_ids as $mnti_site_id ) {
-		switch_to_blog( (int) $mnti_site_id );
-		mnti_uninstall_cleanup();
+	foreach ( $eimn_site_ids as $eimn_site_id ) {
+		switch_to_blog( (int) $eimn_site_id );
+		eimn_uninstall_cleanup();
 		restore_current_blog();
 	}
 } else {
-	mnti_uninstall_cleanup();
+	eimn_uninstall_cleanup();
 }

@@ -21,7 +21,7 @@ $_SERVER['REQUEST_URI'] = '/';
 require $wp_load;
 
 // S'assurer que les tables custom existent (normalement créées à l'activation).
-\Modelo\NettyImport\Db::create_tables();
+\Ethersys\NettyImport\Db::create_tables();
 
 // Constante pour les fixtures (chemin dans le container Docker).
-define('MNTI_FIXTURE_DIR', '/var/www/html/wp-content/mnti-tests/Fixtures');
+define('EIMN_FIXTURE_DIR', '/var/www/html/wp-content/mnti-tests/Fixtures');

@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +24,7 @@ final class Cli {
 			return;
 		}
 
-		\WP_CLI::add_command( 'mnti import', [ __CLASS__, 'cmd_import' ] );
+		\WP_CLI::add_command( 'eimn import', [ __CLASS__, 'cmd_import' ] );
 	}
 
 	/**

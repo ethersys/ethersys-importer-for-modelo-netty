@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Unit;
+namespace Ethersys\NettyImport\Tests\Unit;
 
-use Modelo\NettyImport\XmlParser;
+use Ethersys\NettyImport\XmlParser;
 use PHPUnit\Framework\TestCase;
 
 class XmlParserTest extends TestCase {

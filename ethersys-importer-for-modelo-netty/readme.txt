@@ -1,5 +1,5 @@
-=== Modelo Netty Importer ===
-Contributors: ethersys
+=== Ethersys Importer For Modelo Netty ===
+Contributors: Ethersys
 Tags: import, real estate, houzez, xml, property
 Requires at least: 6.8
 Tested up to: 7.0

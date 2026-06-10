@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests;
+namespace Ethersys\NettyImport\Tests;
 
 use Brain\Monkey;
 use PHPUnit\Framework\TestCase;

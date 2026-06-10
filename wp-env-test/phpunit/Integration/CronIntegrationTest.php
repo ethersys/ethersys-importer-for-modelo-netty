@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Integration;
+namespace Ethersys\NettyImport\Tests\Integration;
 
-use Modelo\NettyImport\Cron;
+use Ethersys\NettyImport\Cron;
 
 class CronIntegrationTest extends WPTestCase
 {
-    private const EVENT_HOOK = 'mnti_import_event';
+    private const EVENT_HOOK = 'eimn_import_event';
 
     public function test_reschedule_with_valid_url_schedules_event(): void
     {
-        update_option('mnti_feed_url', 'https://feed.test/netty.xml');
+        update_option('eimn_feed_url', 'https://feed.test/netty.xml');
         Cron::reschedule_main_import();
 
         $next = wp_next_scheduled(self::EVENT_HOOK);
@@ -22,7 +22,7 @@ class CronIntegrationTest extends WPTestCase
 
     public function test_reschedule_without_url_does_not_schedule_event(): void
     {
-        // mnti_feed_url = '' (après tearDown).
+        // eimn_feed_url = '' (après tearDown).
         Cron::reschedule_main_import();
 
         $next = wp_next_scheduled(self::EVENT_HOOK);
@@ -31,7 +31,7 @@ class CronIntegrationTest extends WPTestCase
 
     public function test_double_reschedule_produces_single_event(): void
     {
-        update_option('mnti_feed_url', 'https://feed.test/netty.xml');
+        update_option('eimn_feed_url', 'https://feed.test/netty.xml');
         Cron::reschedule_main_import();
         Cron::reschedule_main_import(); // Deuxième appel.
 
@@ -47,40 +47,40 @@ class CronIntegrationTest extends WPTestCase
 
     public function test_get_interval_seconds_for_hours(): void
     {
-        update_option('mnti_schedule_interval', 2);
-        update_option('mnti_schedule_unit', 'hour');
+        update_option('eimn_schedule_interval', 2);
+        update_option('eimn_schedule_unit', 'hour');
 
         $this->assertSame(2 * HOUR_IN_SECONDS, Cron::get_interval_seconds_from_options());
     }
 
     public function test_get_interval_seconds_for_minutes(): void
     {
-        update_option('mnti_schedule_interval', 30);
-        update_option('mnti_schedule_unit', 'minute');
+        update_option('eimn_schedule_interval', 30);
+        update_option('eimn_schedule_unit', 'minute');
 
         $this->assertSame(30 * MINUTE_IN_SECONDS, Cron::get_interval_seconds_from_options());
     }
 
     public function test_get_interval_seconds_for_days(): void
     {
-        update_option('mnti_schedule_interval', 3);
-        update_option('mnti_schedule_unit', 'day');
+        update_option('eimn_schedule_interval', 3);
+        update_option('eimn_schedule_unit', 'day');
 
         $this->assertSame(3 * DAY_IN_SECONDS, Cron::get_interval_seconds_from_options());
     }
 
     public function test_get_interval_capped_at_30_days(): void
     {
-        update_option('mnti_schedule_interval', 999);
-        update_option('mnti_schedule_unit', 'day');
+        update_option('eimn_schedule_interval', 999);
+        update_option('eimn_schedule_unit', 'day');
 
         $this->assertSame(30 * DAY_IN_SECONDS, Cron::get_interval_seconds_from_options());
     }
 
     public function test_get_interval_invalid_unit_falls_back_to_hour(): void
     {
-        update_option('mnti_schedule_interval', 6);
-        update_option('mnti_schedule_unit', 'invalid_unit');
+        update_option('eimn_schedule_interval', 6);
+        update_option('eimn_schedule_unit', 'invalid_unit');
 
         $this->assertSame(6 * HOUR_IN_SECONDS, Cron::get_interval_seconds_from_options());
     }

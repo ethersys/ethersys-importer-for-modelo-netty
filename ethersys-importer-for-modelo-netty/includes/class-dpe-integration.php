@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -127,7 +127,7 @@ final class DpeIntegration {
 JS;
 
 		// Register a tiny inline script without shipping a JS file.
-		wp_register_script( 'nh-dpe-move', '', [], MNTI_VERSION, true );
+		wp_register_script( 'nh-dpe-move', '', [], EIMN_VERSION, true );
 		wp_enqueue_script( 'nh-dpe-move' );
 		wp_add_inline_script( 'nh-dpe-move', $js );
 	}

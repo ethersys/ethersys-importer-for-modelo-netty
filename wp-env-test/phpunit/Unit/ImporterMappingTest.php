@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Unit;
+namespace Ethersys\NettyImport\Tests\Unit;
 
-use Modelo\NettyImport\Importer;
-use Modelo\NettyImport\Tests\UnitTestCase;
+use Ethersys\NettyImport\Importer;
+use Ethersys\NettyImport\Tests\UnitTestCase;
 use Brain\Monkey\Functions;
 
 class ImporterMappingTest extends UnitTestCase

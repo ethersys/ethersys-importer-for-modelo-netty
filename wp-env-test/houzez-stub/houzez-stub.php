@@ -42,7 +42,7 @@ add_action( 'init', static function (): void {
 
 add_action( 'add_meta_boxes', static function (): void {
     add_meta_box(
-        'mnti_gallery_preview',
+        'eimn_gallery_preview',
         'Galerie importée (fave_property_images)',
         static function ( WP_Post $post ): void {
             $ids      = get_post_meta( $post->ID, 'fave_property_images' );

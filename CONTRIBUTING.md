@@ -1,6 +1,6 @@
 # Contribuer
 
-Merci de votre intérêt pour **Modelo Netty Importer**. Les contributions (issues, correctifs, documentation) sont les bienvenues.
+Merci de votre intérêt pour **Ethersys Importer For Modelo Netty**. Les contributions (issues, correctifs, documentation) sont les bienvenues.
 
 ## Signaler un bug ou proposer une évolution
 
@@ -9,7 +9,7 @@ Ouvrez une [issue](https://github.com/ethersys/Modelo-Netty-Importer/issues) en 
 - la version du plugin, de WordPress et de PHP ;
 - le thème utilisé (Houzez et sa version) ;
 - les étapes de reproduction et le comportement attendu vs observé ;
-- les logs pertinents (écran **Import Netty → Historique**, ou table `{prefix}mnti_import_logs`).
+- les logs pertinents (écran **Import Netty → Historique**, ou table `{prefix}eimn_import_logs`).
 
 **Ne joignez jamais de secret** (URL de flux réelle, identifiants, données clients) à une issue ou une PR.
 
@@ -25,7 +25,7 @@ composer install
 
 ## Conventions de code
 
-- Le code distribuable vit intégralement dans `modelo-netty-importer/`, namespace `Modelo\NettyImport`, préfixe `mnti_` pour options, hooks, transients et tables.
+- Le code distribuable vit intégralement dans `ethersys-importer-for-modelo-netty/`, namespace `Ethersys\NettyImport`, préfixe `eimn_` pour options, hooks, transients et tables.
 - Respecter les **WordPress Coding Standards** (configuration `.phpcs.xml`).
 - Pas de secret en dur, pas de `error_log` direct (utiliser `Logger`), noms de tables via `Db::runs_table()` / `Db::logs_table()`.
 - Voir `CLAUDE.md` pour l'architecture détaillée et les garde-fous.

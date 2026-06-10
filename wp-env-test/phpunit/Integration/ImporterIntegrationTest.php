@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Integration;
+namespace Ethersys\NettyImport\Tests\Integration;
 
-use Modelo\NettyImport\Importer;
+use Ethersys\NettyImport\Importer;
 
 class ImporterIntegrationTest extends WPTestCase
 {
@@ -13,8 +13,8 @@ class ImporterIntegrationTest extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixturesDir = MNTI_FIXTURE_DIR;
-        update_option('mnti_feed_url', 'https://feed.test/netty.xml');
+        $this->fixturesDir = EIMN_FIXTURE_DIR;
+        update_option('eimn_feed_url', 'https://feed.test/netty.xml');
     }
 
     // ──── Happy path ──────────────────────────────────────────────────────────
@@ -159,21 +159,21 @@ class ImporterIntegrationTest extends WPTestCase
 
     public function test_import_fails_when_feed_url_not_configured(): void
     {
-        delete_option('mnti_feed_url');
+        delete_option('eimn_feed_url');
         $result = Importer::run(['sync_images' => false]);
 
         $this->assertSame(1, $result['counts']['errors']);
 
         global $wpdb;
         $run = $wpdb->get_row(
-            $wpdb->prepare('SELECT * FROM ' . \Modelo\NettyImport\Db::runs_table() . ' WHERE id=%d', $result['run_id']),
+            $wpdb->prepare('SELECT * FROM ' . \Ethersys\NettyImport\Db::runs_table() . ' WHERE id=%d', $result['run_id']),
             ARRAY_A
         );
         $this->assertSame('failed', $run['status']);
 
         $log = $wpdb->get_row(
             $wpdb->prepare(
-                'SELECT * FROM ' . \Modelo\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
+                'SELECT * FROM ' . \Ethersys\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
                 $result['run_id'], 'no_feed_url'
             ),
             ARRAY_A
@@ -191,7 +191,7 @@ class ImporterIntegrationTest extends WPTestCase
 
         global $wpdb;
         $run = $wpdb->get_row(
-            $wpdb->prepare('SELECT * FROM ' . \Modelo\NettyImport\Db::runs_table() . ' WHERE id=%d', $result['run_id']),
+            $wpdb->prepare('SELECT * FROM ' . \Ethersys\NettyImport\Db::runs_table() . ' WHERE id=%d', $result['run_id']),
             ARRAY_A
         );
         $this->assertSame('failed', $run['status']);
@@ -217,7 +217,7 @@ class ImporterIntegrationTest extends WPTestCase
         global $wpdb;
         $count = (int) $wpdb->get_var(
             $wpdb->prepare(
-                'SELECT COUNT(*) FROM ' . \Modelo\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
+                'SELECT COUNT(*) FROM ' . \Ethersys\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
                 $result['run_id'], 'dry_run'
             )
         );
@@ -236,7 +236,7 @@ class ImporterIntegrationTest extends WPTestCase
         global $wpdb;
         $log = $wpdb->get_row(
             $wpdb->prepare(
-                'SELECT * FROM ' . \Modelo\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
+                'SELECT * FROM ' . \Ethersys\NettyImport\Db::logs_table() . ' WHERE run_id=%d AND action=%s',
                 $result['run_id'], 'missing_reference'
             ),
             ARRAY_A
@@ -389,7 +389,7 @@ class ImporterIntegrationTest extends WPTestCase
 
     public function test_no_agent_configured_uses_author_info(): void
     {
-        // mnti_default_agent_id = 0 (par défaut après tearDown).
+        // eimn_default_agent_id = 0 (par défaut après tearDown).
         $xml  = (string) file_get_contents($this->fixturesDir . '/feed-minimal.xml');
         $hook = $this->stub_feed($xml);
         Importer::run(['sync_images' => false, 'delete_missing' => false]);
@@ -406,7 +406,7 @@ class ImporterIntegrationTest extends WPTestCase
             'post_title'  => 'Agent Test',
             'post_status' => 'publish',
         ]);
-        update_option('mnti_default_agent_id', $agent_id);
+        update_option('eimn_default_agent_id', $agent_id);
 
         $xml  = (string) file_get_contents($this->fixturesDir . '/feed-minimal.xml');
         $hook = $this->stub_feed($xml);

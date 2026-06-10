@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,28 +14,28 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Admin {
 	private const MENU_SLUG             = 'nti-import';
-	private const OPT_FEED_URL          = 'mnti_feed_url';
-	private const OPT_SCHEDULE_INTERVAL = 'mnti_schedule_interval';
-	private const OPT_SCHEDULE_UNIT     = 'mnti_schedule_unit';
-	private const OPT_DEFAULT_AGENT_ID  = 'mnti_default_agent_id';
+	private const OPT_FEED_URL          = 'eimn_feed_url';
+	private const OPT_SCHEDULE_INTERVAL = 'eimn_schedule_interval';
+	private const OPT_SCHEDULE_UNIT     = 'eimn_schedule_unit';
+	private const OPT_DEFAULT_AGENT_ID  = 'eimn_default_agent_id';
 
 	public static function init(): void {
 		add_action( 'admin_menu', [ __CLASS__, 'register_menu' ] );
-		add_action( 'admin_post_mnti_run_import', [ __CLASS__, 'handle_run_import' ] );
-		add_action( 'admin_post_mnti_save_settings', [ __CLASS__, 'handle_save_settings' ] );
-		add_action( 'admin_post_mnti_test_feed', [ __CLASS__, 'handle_test_feed' ] );
+		add_action( 'admin_post_eimn_run_import', [ __CLASS__, 'handle_run_import' ] );
+		add_action( 'admin_post_eimn_save_settings', [ __CLASS__, 'handle_save_settings' ] );
+		add_action( 'admin_post_eimn_test_feed', [ __CLASS__, 'handle_test_feed' ] );
 	}
 
 	public static function register_menu(): void {
 		add_menu_page(
-			__( 'Import Immo', 'modelo-netty-importer' ),
-			__( 'Import Immo', 'modelo-netty-importer' ),
+			__( 'Import Immo', 'ethersys-importer-for-modelo-netty' ),
+			__( 'Import Immo', 'ethersys-importer-for-modelo-netty' ),
 			'manage_options',
 			self::MENU_SLUG,
 			[ __CLASS__, 'render_page' ],
@@ -45,9 +45,9 @@ final class Admin {
 
 	public static function handle_test_feed(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'modelo-netty-importer' ) );
+			wp_die( esc_html__( 'Accès refusé.', 'ethersys-importer-for-modelo-netty' ) );
 		}
-		check_admin_referer( 'mnti_test_feed' );
+		check_admin_referer( 'eimn_test_feed' );
 
 		self::redirect_test_result( self::run_feed_test( Importer::get_feed_url() ) );
 	}
@@ -62,14 +62,14 @@ final class Admin {
 
 		try {
 			if ( $url === '' ) {
-				throw new \RuntimeException( __( 'URL du flux non configurée.', 'modelo-netty-importer' ) );
+				throw new \RuntimeException( __( 'URL du flux non configurée.', 'ethersys-importer-for-modelo-netty' ) );
 			}
 
 			$res = wp_remote_get(
 				$url,
 				[
 					'timeout'    => 30,
-					'user-agent' => 'Modelo-Netty-Importer/' . MNTI_VERSION,
+					'user-agent' => 'Modelo-Netty-Importer/' . EIMN_VERSION,
 				]
 			);
 
@@ -84,7 +84,7 @@ final class Admin {
 
 			$body = (string) wp_remote_retrieve_body( $res );
 			if ( trim( $body ) === '' ) {
-				throw new \RuntimeException( __( 'Corps de réponse vide.', 'modelo-netty-importer' ) );
+				throw new \RuntimeException( __( 'Corps de réponse vide.', 'ethersys-importer-for-modelo-netty' ) );
 			}
 
 			$parsed = XmlParser::parse( $body );
@@ -112,11 +112,11 @@ final class Admin {
 	private static function redirect_test_result( array $result ): void {
 		$args = [
 			'page'       => self::MENU_SLUG,
-			'mnti_msg'   => $result['status'],
-			'mnti_count' => $result['count'],
+			'eimn_msg'   => $result['status'],
+			'eimn_count' => $result['count'],
 		];
 		if ( $result['message'] !== '' ) {
-			$args['mnti_err'] = rawurlencode( $result['message'] );
+			$args['eimn_err'] = rawurlencode( $result['message'] );
 		}
 
 		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
@@ -125,9 +125,9 @@ final class Admin {
 
 	public static function handle_run_import(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'modelo-netty-importer' ) );
+			wp_die( esc_html__( 'Accès refusé.', 'ethersys-importer-for-modelo-netty' ) );
 		}
-		check_admin_referer( 'mnti_run_import' );
+		check_admin_referer( 'eimn_run_import' );
 
 		// Import synchrone : on exécute directement dans cette requête (pas de wp-cron
 		// loopback qui mourait au timeout web). On lève les limites de temps/mémoire et on
@@ -164,7 +164,7 @@ final class Admin {
 			add_query_arg(
 				[
 					'page'     => self::MENU_SLUG,
-					'mnti_msg' => $msg,
+					'eimn_msg' => $msg,
 				],
 				admin_url( 'admin.php' )
 			)
@@ -174,23 +174,23 @@ final class Admin {
 
 	public static function handle_save_settings(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'modelo-netty-importer' ) );
+			wp_die( esc_html__( 'Accès refusé.', 'ethersys-importer-for-modelo-netty' ) );
 		}
-		check_admin_referer( 'mnti_save_settings' );
+		check_admin_referer( 'eimn_save_settings' );
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via esc_url_raw() on the next line.
-		$feed_raw = isset( $_POST['mnti_feed_url'] ) ? wp_unslash( (string) $_POST['mnti_feed_url'] ) : '';
+		$feed_raw = isset( $_POST['eimn_feed_url'] ) ? wp_unslash( (string) $_POST['eimn_feed_url'] ) : '';
 		$feed_url = $feed_raw === '' ? '' : esc_url_raw( trim( $feed_raw ), [ 'http', 'https' ] );
 
-		$interval = isset( $_POST['mnti_schedule_interval'] ) ? (int) $_POST['mnti_schedule_interval'] : 6;
+		$interval = isset( $_POST['eimn_schedule_interval'] ) ? (int) $_POST['eimn_schedule_interval'] : 6;
 		$interval = max( 1, min( 999, $interval ) );
 
-		$unit = isset( $_POST['mnti_schedule_unit'] ) ? sanitize_key( (string) wp_unslash( $_POST['mnti_schedule_unit'] ) ) : 'hour';
+		$unit = isset( $_POST['eimn_schedule_unit'] ) ? sanitize_key( (string) wp_unslash( $_POST['eimn_schedule_unit'] ) ) : 'hour';
 		if ( ! in_array( $unit, [ 'minute', 'hour', 'day' ], true ) ) {
 			$unit = 'hour';
 		}
 
-		$agent_id = isset( $_POST['mnti_default_agent_id'] ) ? (int) $_POST['mnti_default_agent_id'] : 0;
+		$agent_id = isset( $_POST['eimn_default_agent_id'] ) ? (int) $_POST['eimn_default_agent_id'] : 0;
 		if ( $agent_id < 0 ) {
 			$agent_id = 0;
 		}
@@ -218,16 +218,16 @@ final class Admin {
 
 		// Bouton « Tester la connexion au flux » : on a enregistré l'URL saisie ci-dessus,
 		// on teste donc la valeur fraîchement enregistrée (et non l'ancienne).
-		if ( isset( $_POST['mnti_test'] ) ) {
+		if ( isset( $_POST['eimn_test'] ) ) {
 			self::redirect_test_result( self::run_feed_test( $feed_url ) );
 		}
 
 		$args = [
 			'page'     => self::MENU_SLUG,
-			'mnti_msg' => 'settings_ok',
+			'eimn_msg' => 'settings_ok',
 		];
 		if ( $agent_invalid ) {
-			$args['mnti_agent_warn'] = 1;
+			$args['eimn_agent_warn'] = 1;
 		}
 		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
 		exit;
@@ -235,7 +235,7 @@ final class Admin {
 
 	public static function render_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'modelo-netty-importer' ) );
+			wp_die( esc_html__( 'Accès refusé.', 'ethersys-importer-for-modelo-netty' ) );
 		}
 
 		global $wpdb;
@@ -247,34 +247,34 @@ final class Admin {
 		$run_id = isset( $_GET['run_id'] ) ? (int) $_GET['run_id'] : 0;
 
 		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Import Immo', 'modelo-netty-importer' ) . '</h1>';
+		echo '<h1>' . esc_html__( 'Import Immo', 'ethersys-importer-for-modelo-netty' ) . '</h1>';
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of redirect message, gated by current_user_can( 'manage_options' ).
-		$msg = isset( $_GET['mnti_msg'] ) ? sanitize_text_field( wp_unslash( $_GET['mnti_msg'] ) ) : '';
+		$msg = isset( $_GET['eimn_msg'] ) ? sanitize_text_field( wp_unslash( $_GET['eimn_msg'] ) ) : '';
 		if ( $msg === 'ok' ) {
-			echo '<div class="notice notice-success"><p>' . esc_html__( 'Import terminé. Voir le dernier run ci-dessous pour le détail.', 'modelo-netty-importer' ) . '</p></div>';
+			echo '<div class="notice notice-success"><p>' . esc_html__( 'Import terminé. Voir le dernier run ci-dessous pour le détail.', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 		} elseif ( $msg === 'failed' ) {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'Import en erreur. Consultez les logs.', 'modelo-netty-importer' ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Import en erreur. Consultez les logs.', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 		} elseif ( $msg === 'locked' ) {
-			echo '<div class="notice notice-warning"><p>' . esc_html__( 'Un import est déjà en cours.', 'modelo-netty-importer' ) . '</p></div>';
+			echo '<div class="notice notice-warning"><p>' . esc_html__( 'Un import est déjà en cours.', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 		} elseif ( $msg === 'settings_ok' ) {
-			echo '<div class="notice notice-success"><p>' . esc_html__( 'Réglages enregistrés.', 'modelo-netty-importer' ) . '</p></div>';
+			echo '<div class="notice notice-success"><p>' . esc_html__( 'Réglages enregistrés.', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of redirect flag, gated by current_user_can( 'manage_options' ).
-			if ( isset( $_GET['mnti_agent_warn'] ) ) {
-				echo '<div class="notice notice-warning"><p>' . esc_html__( 'ID d’agent introuvable (ni agent Houzez, ni utilisateur) : valeur réinitialisée à 0 (auteur du bien).', 'modelo-netty-importer' ) . '</p></div>';
+			if ( isset( $_GET['eimn_agent_warn'] ) ) {
+				echo '<div class="notice notice-warning"><p>' . esc_html__( 'ID d’agent introuvable (ni agent Houzez, ni utilisateur) : valeur réinitialisée à 0 (auteur du bien).', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 			}
 		} elseif ( $msg === 'test_ok' ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of redirect param, gated by current_user_can( 'manage_options' ).
-			$count = isset( $_GET['mnti_count'] ) ? (int) $_GET['mnti_count'] : 0;
+			$count = isset( $_GET['eimn_count'] ) ? (int) $_GET['eimn_count'] : 0;
 			echo '<div class="notice notice-success"><p>' . esc_html(
 				/* translators: %d: number of properties detected in the feed */
-				sprintf( __( 'Connexion OK — %d biens détectés dans le flux.', 'modelo-netty-importer' ), $count )
+				sprintf( __( 'Connexion OK — %d biens détectés dans le flux.', 'ethersys-importer-for-modelo-netty' ), $count )
 			) . '</p></div>';
 		} elseif ( $msg === 'test_fail' ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of redirect param, gated by current_user_can( 'manage_options' ).
-			$err = isset( $_GET['mnti_err'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['mnti_err'] ) ) ) : '';
+			$err = isset( $_GET['eimn_err'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['eimn_err'] ) ) ) : '';
 			echo '<div class="notice notice-error"><p>' . esc_html(
-				__( 'Erreur de connexion : ', 'modelo-netty-importer' ) . $err
+				__( 'Erreur de connexion : ', 'ethersys-importer-for-modelo-netty' ) . $err
 			) . '</p></div>';
 		}
 
@@ -288,13 +288,13 @@ final class Admin {
 		$default_agent_id = (int) get_option( self::OPT_DEFAULT_AGENT_ID, 0 );
 
 		if ( ! Importer::is_feed_configured() ) {
-			echo '<div class="notice notice-warning inline" style="margin:12px 0;"><p>' . esc_html__( 'Sans URL de flux valide, l’import manuel et l’import automatique ne pourront pas récupérer les données.', 'modelo-netty-importer' ) . '</p></div>';
+			echo '<div class="notice notice-warning inline" style="margin:12px 0;"><p>' . esc_html__( 'Sans URL de flux valide, l’import manuel et l’import automatique ne pourront pas récupérer les données.', 'ethersys-importer-for-modelo-netty' ) . '</p></div>';
 		}
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="margin:12px 0;">';
-		wp_nonce_field( 'mnti_run_import' );
-		echo '<input type="hidden" name="action" value="mnti_run_import" />';
-		submit_button( __( 'Lancer l’import maintenant', 'modelo-netty-importer' ), 'primary', 'submit', false );
+		wp_nonce_field( 'eimn_run_import' );
+		echo '<input type="hidden" name="action" value="eimn_run_import" />';
+		submit_button( __( 'Lancer l’import maintenant', 'ethersys-importer-for-modelo-netty' ), 'primary', 'submit', false );
 		echo '</form>';
 
 		if ( $run_id ) {
@@ -305,7 +305,7 @@ final class Admin {
 			);
 			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 			if ( $run ) {
-				echo '<h2>' . esc_html__( 'Détail du run', 'modelo-netty-importer' ) . ' #' . (int) $run_id . '</h2>';
+				echo '<h2>' . esc_html__( 'Détail du run', 'ethersys-importer-for-modelo-netty' ) . ' #' . (int) $run_id . '</h2>';
 				echo '<pre style="background:#fff;border:1px solid #ccd0d4;padding:12px;max-width:1200px;overflow:auto;">' . esc_html( wp_json_encode( $run, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ) . '</pre>';
 			}
 
@@ -335,9 +335,9 @@ final class Admin {
 			);
 			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
-			echo '<h3>' . esc_html__( 'Logs (200 derniers)', 'modelo-netty-importer' ) . '</h3>';
+			echo '<h3>' . esc_html__( 'Logs (200 derniers)', 'ethersys-importer-for-modelo-netty' ) . '</h3>';
 			echo '<table class="widefat striped"><thead><tr>';
-			echo '<th>ID</th><th>' . esc_html__( 'Niveau', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Action', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Référence', 'modelo-netty-importer' ) . '</th><th>Post</th><th>Attachment</th><th>' . esc_html__( 'Message', 'modelo-netty-importer' ) . '</th><th>Date</th>';
+			echo '<th>ID</th><th>' . esc_html__( 'Niveau', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Action', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Référence', 'ethersys-importer-for-modelo-netty' ) . '</th><th>Post</th><th>Attachment</th><th>' . esc_html__( 'Message', 'ethersys-importer-for-modelo-netty' ) . '</th><th>Date</th>';
 			echo '</tr></thead><tbody>';
 			foreach ( $logs as $row ) {
 				echo '<tr>';
@@ -355,9 +355,9 @@ final class Admin {
 		} else {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name from Db::runs_table(), not user input; custom table, no WP cache API applicable.
 			$runs = $wpdb->get_results( "SELECT * FROM {$runs_table} ORDER BY id DESC LIMIT 20", ARRAY_A );
-			echo '<h2>' . esc_html__( 'Derniers runs (20 plus récents)', 'modelo-netty-importer' ) . '</h2>';
+			echo '<h2>' . esc_html__( 'Derniers runs (20 plus récents)', 'ethersys-importer-for-modelo-netty' ) . '</h2>';
 			echo '<table class="widefat striped"><thead><tr>';
-			echo '<th>ID</th><th>' . esc_html__( 'Statut', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Début', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Fin', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Source', 'modelo-netty-importer' ) . '</th><th>' . esc_html__( 'Compteurs', 'modelo-netty-importer' ) . '</th>';
+			echo '<th>ID</th><th>' . esc_html__( 'Statut', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Début', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Fin', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Source', 'ethersys-importer-for-modelo-netty' ) . '</th><th>' . esc_html__( 'Compteurs', 'ethersys-importer-for-modelo-netty' ) . '</th>';
 			echo '</tr></thead><tbody>';
 			foreach ( $runs as $row ) {
 				$link = add_query_arg(
@@ -379,48 +379,48 @@ final class Admin {
 			echo '</tbody></table>';
 		}
 
-		echo '<h2>' . esc_html__( 'Réglages', 'modelo-netty-importer' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Réglages', 'ethersys-importer-for-modelo-netty' ) . '</h2>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="max-width:800px;background:#fff;border:1px solid #ccd0d4;padding:12px;margin:12px 0;">';
-		wp_nonce_field( 'mnti_save_settings' );
-		echo '<input type="hidden" name="action" value="mnti_save_settings" />';
+		wp_nonce_field( 'eimn_save_settings' );
+		echo '<input type="hidden" name="action" value="eimn_save_settings" />';
 
-		echo '<p><label for="mnti_feed_url"><strong>' . esc_html__( 'URL du flux XML Netty', 'modelo-netty-importer' ) . '</strong></label></p>';
-		echo '<p><input class="large-text code" type="url" id="mnti_feed_url" name="mnti_feed_url" value="' . esc_attr( $feed_url ) . '" placeholder="https://…" autocomplete="off" /></p>';
-		echo '<p class="description">' . esc_html__( 'Fournie par votre espace Netty (aucune URL secrète ne doit figurer dans le code du plugin). HTTPS recommandé.', 'modelo-netty-importer' ) . '</p>';
+		echo '<p><label for="eimn_feed_url"><strong>' . esc_html__( 'URL du flux XML Netty', 'ethersys-importer-for-modelo-netty' ) . '</strong></label></p>';
+		echo '<p><input class="large-text code" type="url" id="eimn_feed_url" name="eimn_feed_url" value="' . esc_attr( $feed_url ) . '" placeholder="https://…" autocomplete="off" /></p>';
+		echo '<p class="description">' . esc_html__( 'Fournie par votre espace Netty (aucune URL secrète ne doit figurer dans le code du plugin). HTTPS recommandé.', 'ethersys-importer-for-modelo-netty' ) . '</p>';
 
 		// Bouton de test directement sous l'URL : enregistre puis vérifie la valeur saisie.
 		echo '<p>';
-		submit_button( __( 'Tester la connexion au flux', 'modelo-netty-importer' ), 'secondary', 'mnti_test', false );
-		echo ' <span class="description">' . esc_html__( 'Enregistre les réglages puis vérifie l’URL ci-dessus.', 'modelo-netty-importer' ) . '</span>';
+		submit_button( __( 'Tester la connexion au flux', 'ethersys-importer-for-modelo-netty' ), 'secondary', 'eimn_test', false );
+		echo ' <span class="description">' . esc_html__( 'Enregistre les réglages puis vérifie l’URL ci-dessus.', 'ethersys-importer-for-modelo-netty' ) . '</span>';
 		echo '</p>';
 
-		echo '<p><strong>' . esc_html__( 'Fréquence d’import automatique (WP-Cron)', 'modelo-netty-importer' ) . '</strong></p>';
+		echo '<p><strong>' . esc_html__( 'Fréquence d’import automatique (WP-Cron)', 'ethersys-importer-for-modelo-netty' ) . '</strong></p>';
 		echo '<p style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">';
-		echo '<label for="mnti_schedule_interval" class="screen-reader-text">' . esc_html__( 'Nombre', 'modelo-netty-importer' ) . '</label>';
-		echo '<input class="small-text" type="number" min="1" max="999" step="1" id="mnti_schedule_interval" name="mnti_schedule_interval" value="' . esc_attr( (string) $schedule_interval ) . '" />';
-		echo '<label for="mnti_schedule_unit" class="screen-reader-text">' . esc_html__( 'Unité', 'modelo-netty-importer' ) . '</label>';
-		echo '<select id="mnti_schedule_unit" name="mnti_schedule_unit">';
-		echo '<option value="minute"' . selected( $schedule_unit, 'minute', false ) . '>' . esc_html__( 'minute(s)', 'modelo-netty-importer' ) . '</option>';
-		echo '<option value="hour"' . selected( $schedule_unit, 'hour', false ) . '>' . esc_html__( 'heure(s)', 'modelo-netty-importer' ) . '</option>';
-		echo '<option value="day"' . selected( $schedule_unit, 'day', false ) . '>' . esc_html__( 'jour(s)', 'modelo-netty-importer' ) . '</option>';
+		echo '<label for="eimn_schedule_interval" class="screen-reader-text">' . esc_html__( 'Nombre', 'ethersys-importer-for-modelo-netty' ) . '</label>';
+		echo '<input class="small-text" type="number" min="1" max="999" step="1" id="eimn_schedule_interval" name="eimn_schedule_interval" value="' . esc_attr( (string) $schedule_interval ) . '" />';
+		echo '<label for="eimn_schedule_unit" class="screen-reader-text">' . esc_html__( 'Unité', 'ethersys-importer-for-modelo-netty' ) . '</label>';
+		echo '<select id="eimn_schedule_unit" name="eimn_schedule_unit">';
+		echo '<option value="minute"' . selected( $schedule_unit, 'minute', false ) . '>' . esc_html__( 'minute(s)', 'ethersys-importer-for-modelo-netty' ) . '</option>';
+		echo '<option value="hour"' . selected( $schedule_unit, 'hour', false ) . '>' . esc_html__( 'heure(s)', 'ethersys-importer-for-modelo-netty' ) . '</option>';
+		echo '<option value="day"' . selected( $schedule_unit, 'day', false ) . '>' . esc_html__( 'jour(s)', 'ethersys-importer-for-modelo-netty' ) . '</option>';
 		echo '</select>';
 		echo '</p>';
-		echo '<p class="description">' . esc_html__( 'L’import planifié n’est actif que si l’URL du flux est renseignée. Intervalle maximal : 30 jours. Sur un site peu visité, prévoir un vrai cron système qui appelle wp-cron.php.', 'modelo-netty-importer' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'L’import planifié n’est actif que si l’URL du flux est renseignée. Intervalle maximal : 30 jours. Sur un site peu visité, prévoir un vrai cron système qui appelle wp-cron.php.', 'ethersys-importer-for-modelo-netty' ) . '</p>';
 
 		$next_ts = Cron::next_import_timestamp();
 		if ( $next_ts ) {
 			/* translators: %s: date/heure locale WordPress */
-			echo '<p class="description">' . esc_html( sprintf( __( 'Prochain import automatique prévu vers : %s', 'modelo-netty-importer' ), wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $next_ts ) ) ) . '</p>';
+			echo '<p class="description">' . esc_html( sprintf( __( 'Prochain import automatique prévu vers : %s', 'ethersys-importer-for-modelo-netty' ), wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $next_ts ) ) ) . '</p>';
 		} elseif ( Importer::is_feed_configured() ) {
-			echo '<p class="description">' . esc_html__( 'Aucun import automatique planifié pour l’instant (enregistrez les réglages pour replanifier).', 'modelo-netty-importer' ) . '</p>';
+			echo '<p class="description">' . esc_html__( 'Aucun import automatique planifié pour l’instant (enregistrez les réglages pour replanifier).', 'ethersys-importer-for-modelo-netty' ) . '</p>';
 		}
 
 		echo '<hr style="margin:16px 0;" />';
 
-		echo '<p><label for="mnti_default_agent_id"><strong>' . esc_html__( 'ID de l’agent Houzez (unique)', 'modelo-netty-importer' ) . '</strong></label></p>';
-		echo '<p><input class="regular-text" type="number" min="0" step="1" id="mnti_default_agent_id" name="mnti_default_agent_id" value="' . esc_attr( (string) $default_agent_id ) . '" /></p>';
-		echo '<p class="description">' . esc_html__( 'Si renseigné, tous les biens importés utiliseront cet agent (formulaire de contact). Laissez 0 pour utiliser l’auteur du bien.', 'modelo-netty-importer' ) . '</p>';
-		submit_button( __( 'Enregistrer', 'modelo-netty-importer' ), 'primary', 'mnti_save', false );
+		echo '<p><label for="eimn_default_agent_id"><strong>' . esc_html__( 'ID de l’agent Houzez (unique)', 'ethersys-importer-for-modelo-netty' ) . '</strong></label></p>';
+		echo '<p><input class="regular-text" type="number" min="0" step="1" id="eimn_default_agent_id" name="eimn_default_agent_id" value="' . esc_attr( (string) $default_agent_id ) . '" /></p>';
+		echo '<p class="description">' . esc_html__( 'Si renseigné, tous les biens importés utiliseront cet agent (formulaire de contact). Laissez 0 pour utiliser l’auteur du bien.', 'ethersys-importer-for-modelo-netty' ) . '</p>';
+		submit_button( __( 'Enregistrer', 'ethersys-importer-for-modelo-netty' ), 'primary', 'eimn_save', false );
 		echo '</form>';
 
 		echo '</div>';

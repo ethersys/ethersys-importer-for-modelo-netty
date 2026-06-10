@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Unit;
+namespace Ethersys\NettyImport\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ class ImporterTest extends TestCase {
 
     /** @test */
     public function map_status_slug_vente_retourne_acheter(): void {
-        $ref = new \ReflectionClass( \Modelo\NettyImport\Importer::class );
+        $ref = new \ReflectionClass( \Ethersys\NettyImport\Importer::class );
         $method = $ref->getMethod( 'map_status_slug' );
         $method->setAccessible( true );
 
@@ -20,7 +20,7 @@ class ImporterTest extends TestCase {
 
     /** @test */
     public function map_status_slug_location_retourne_louer(): void {
-        $ref = new \ReflectionClass( \Modelo\NettyImport\Importer::class );
+        $ref = new \ReflectionClass( \Ethersys\NettyImport\Importer::class );
         $method = $ref->getMethod( 'map_status_slug' );
         $method->setAccessible( true );
 
@@ -30,7 +30,7 @@ class ImporterTest extends TestCase {
 
     /** @test */
     public function is_truthy_feature_value_rejette_non(): void {
-        $ref = new \ReflectionClass( \Modelo\NettyImport\Importer::class );
+        $ref = new \ReflectionClass( \Ethersys\NettyImport\Importer::class );
         $method = $ref->getMethod( 'is_truthy_feature_value' );
         $method->setAccessible( true );
 
@@ -44,7 +44,7 @@ class ImporterTest extends TestCase {
 
     /** @test */
     public function is_truthy_feature_value_accepte_oui(): void {
-        $ref = new \ReflectionClass( \Modelo\NettyImport\Importer::class );
+        $ref = new \ReflectionClass( \Ethersys\NettyImport\Importer::class );
         $method = $ref->getMethod( 'is_truthy_feature_value' );
         $method->setAccessible( true );
 
@@ -55,7 +55,7 @@ class ImporterTest extends TestCase {
 
     /** @test */
     public function is_truthy_feature_value_nord_est_est_truthy(): void {
-        $ref = new \ReflectionClass( \Modelo\NettyImport\Importer::class );
+        $ref = new \ReflectionClass( \Ethersys\NettyImport\Importer::class );
         $method = $ref->getMethod( 'is_truthy_feature_value' );
         $method->setAccessible( true );
 

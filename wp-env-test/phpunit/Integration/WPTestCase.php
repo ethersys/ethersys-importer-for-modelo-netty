@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Integration;
+namespace Ethersys\NettyImport\Tests\Integration;
 
-use Modelo\NettyImport\Db;
+use Ethersys\NettyImport\Db;
 use PHPUnit\Framework\TestCase;
 
 abstract class WPTestCase extends TestCase
@@ -35,11 +35,11 @@ abstract class WPTestCase extends TestCase
         }
 
         // Réinitialiser les options plugin.
-        foreach (['mnti_feed_url', 'mnti_schedule_interval', 'mnti_schedule_unit', 'mnti_default_agent_id'] as $opt) {
+        foreach (['eimn_feed_url', 'eimn_schedule_interval', 'eimn_schedule_unit', 'eimn_default_agent_id'] as $opt) {
             delete_option($opt);
         }
-        delete_transient('mnti_import_lock');
-        wp_clear_scheduled_hook('mnti_import_event');
+        delete_transient('eimn_import_lock');
+        wp_clear_scheduled_hook('eimn_import_event');
 
         wp_cache_flush();
         parent::tearDown();
@@ -56,7 +56,7 @@ abstract class WPTestCase extends TestCase
             'fields'         => 'ids',
             'posts_per_page' => 1,
             'meta_query'     => [
-                ['key' => \Modelo\NettyImport\Importer::META_REF, 'value' => $ref],
+                ['key' => \Ethersys\NettyImport\Importer::META_REF, 'value' => $ref],
             ],
         ]);
         return ! empty($q->posts[0]) ? (int) $q->posts[0] : null;

@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,28 +14,28 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Plugin {
-	public const TEXT_DOMAIN = 'modelo-netty-importer';
+	public const TEXT_DOMAIN = 'ethersys-importer-for-modelo-netty';
 
 	public static function init(): void {
-		register_activation_hook( MNTI_BASENAME, [ __CLASS__, 'activate' ] );
-		register_deactivation_hook( MNTI_BASENAME, [ __CLASS__, 'deactivate' ] );
+		register_activation_hook( EIMN_BASENAME, [ __CLASS__, 'activate' ] );
+		register_deactivation_hook( EIMN_BASENAME, [ __CLASS__, 'deactivate' ] );
 
-		require_once MNTI_PATH . 'includes/class-db.php';
-		require_once MNTI_PATH . 'includes/class-logger.php';
-		require_once MNTI_PATH . 'includes/class-xml-parser.php';
-		require_once MNTI_PATH . 'includes/class-media-sync.php';
-		require_once MNTI_PATH . 'includes/class-importer.php';
-		require_once MNTI_PATH . 'includes/class-cron.php';
-		require_once MNTI_PATH . 'includes/class-admin.php';
-		require_once MNTI_PATH . 'includes/class-cli.php';
-		require_once MNTI_PATH . 'includes/class-dpe-integration.php';
-		require_once MNTI_PATH . 'includes/class-theme-compat.php';
-		require_once MNTI_PATH . 'includes/class-houzez-search-i18n.php';
+		require_once EIMN_PATH . 'includes/class-db.php';
+		require_once EIMN_PATH . 'includes/class-logger.php';
+		require_once EIMN_PATH . 'includes/class-xml-parser.php';
+		require_once EIMN_PATH . 'includes/class-media-sync.php';
+		require_once EIMN_PATH . 'includes/class-importer.php';
+		require_once EIMN_PATH . 'includes/class-cron.php';
+		require_once EIMN_PATH . 'includes/class-admin.php';
+		require_once EIMN_PATH . 'includes/class-cli.php';
+		require_once EIMN_PATH . 'includes/class-dpe-integration.php';
+		require_once EIMN_PATH . 'includes/class-theme-compat.php';
+		require_once EIMN_PATH . 'includes/class-houzez-search-i18n.php';
 
 		Cron::init();
 		Admin::init();

@@ -15,7 +15,7 @@ Environnement Docker WordPress pour tester le plugin [Modelo-Netty-Importer](htt
 
 ```bash
 cp test/.env.example test/.env
-# Éditer test/.env et renseigner MNTI_FEED_URL avec l'URL du flux Netty
+# Éditer test/.env et renseigner EIMN_FEED_URL avec l'URL du flux Netty
 
 bash test/setup.sh
 ```
@@ -24,22 +24,22 @@ bash test/setup.sh
 
 ```bash
 # Lancer un import complet
-wp-env run cli wp mnti import
+wp-env run cli wp eimn import
 
 # Import sans suppression des biens absents du flux
-wp-env run cli wp mnti import --no-delete
+wp-env run cli wp eimn import --no-delete
 
 # Import sans téléchargement d'images
-wp-env run cli wp mnti import --no-images
+wp-env run cli wp eimn import --no-images
 
 # Import à blanc (aucune modification en base)
-wp-env run cli wp mnti import --dry-run
+wp-env run cli wp eimn import --dry-run
 
 # Voir les derniers runs en base
-wp-env run cli wp db query "SELECT id, status, created_at, counts_json FROM wp_mnti_import_runs ORDER BY id DESC LIMIT 10;"
+wp-env run cli wp db query "SELECT id, status, created_at, counts_json FROM wp_eimn_import_runs ORDER BY id DESC LIMIT 10;"
 
 # Voir les erreurs du dernier run
-wp-env run cli wp db query "SELECT level, action, reference_technique, message FROM wp_mnti_import_logs WHERE run_id = (SELECT MAX(id) FROM wp_mnti_import_runs) ORDER BY id;"
+wp-env run cli wp db query "SELECT level, action, reference_technique, message FROM wp_eimn_import_logs WHERE run_id = (SELECT MAX(id) FROM wp_eimn_import_runs) ORDER BY id;"
 
 # Arrêter l'environnement (conserve les données)
 wp-env stop
@@ -52,7 +52,7 @@ wp-env clean all && bash test/setup.sh
 
 | Plugin | Rôle |
 |---|---|
-| `modelo-netty-importer` | Plugin testé |
+| `ethersys-importer-for-modelo-netty` | Plugin testé |
 | `houzez-stub` | Remplace Houzez : post types, taxonomies, aperçu galerie |
 
 ## Accès admin
@@ -96,7 +96,7 @@ wp-env doit être démarré (`bash setup.sh` ou `wp-env start`).
 cd wp-env-test && wp-env run cli bash -c "php /var/www/html/wp-content/mnti-tests/vendor/bin/phpunit -c /var/www/html/wp-content/mnti-tests/phpunit.integration.xml --testdox"
 ```
 
-> ⚠️ **Les tests d'intégration tournent sur la base wp-env réelle** (`"testsEnvironment": false`). Leur teardown **efface les options du plugin** (dont `mnti_feed_url`, `mnti_schedule_*`). Après une passe de tests d'intégration, relancer `bash setup.sh` pour restaurer les réglages depuis `.env`.
+> ⚠️ **Les tests d'intégration tournent sur la base wp-env réelle** (`"testsEnvironment": false`). Leur teardown **efface les options du plugin** (dont `eimn_feed_url`, `eimn_schedule_*`). Après une passe de tests d'intégration, relancer `bash setup.sh` pour restaurer les réglages depuis `.env`.
 
 ### Lancer un seul test
 

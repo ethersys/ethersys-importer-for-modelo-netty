@@ -9,10 +9,10 @@ if ( ! $_tests_dir ) {
 	if ( ! defined( 'ABSPATH' ) ) {
 		define( 'ABSPATH', sys_get_temp_dir() . '/' );
 	}
-	define( 'MNTI_VERSION', '0.0.0-test' );
-	define( 'MNTI_PATH', dirname( __DIR__ ) . '/modelo-netty-importer/' );
-	define( 'MNTI_URL', 'http://localhost/' );
-	define( 'MNTI_BASENAME', 'modelo-netty-importer/modelo-netty-importer.php' );
+	define( 'EIMN_VERSION', '0.0.0-test' );
+	define( 'EIMN_PATH', dirname( __DIR__ ) . '/ethersys-importer-for-modelo-netty/' );
+	define( 'EIMN_URL', 'http://localhost/' );
+	define( 'EIMN_BASENAME', 'ethersys-importer-for-modelo-netty/ethersys-importer-for-modelo-netty.php' );
 
 	require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
@@ -32,9 +32,9 @@ require_once $_tests_dir . '/includes/functions.php';
 tests_add_filter(
 	'muplugins_loaded',
 	static function () {
-		$plugin_file = WP_PLUGIN_DIR . '/modelo-netty-importer/modelo-netty-importer.php';
+		$plugin_file = WP_PLUGIN_DIR . '/ethersys-importer-for-modelo-netty/ethersys-importer-for-modelo-netty.php';
 		if ( ! file_exists( $plugin_file ) ) {
-			$plugin_file = dirname( __DIR__ ) . '/modelo-netty-importer/modelo-netty-importer.php';
+			$plugin_file = dirname( __DIR__ ) . '/ethersys-importer-for-modelo-netty/ethersys-importer-for-modelo-netty.php';
 		}
 		require $plugin_file;
 	}

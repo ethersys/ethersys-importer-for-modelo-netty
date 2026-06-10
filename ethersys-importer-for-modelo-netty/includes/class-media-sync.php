@@ -1,8 +1,8 @@
 <?php
 /**
- * Modelo Netty Importer
+ * Ethersys Importer For Modelo Netty
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -14,12 +14,12 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport;
+namespace Ethersys\NettyImport;
 
 defined( 'ABSPATH' ) || exit;
 
 final class MediaSync {
-	public const ATT_SOURCE_URL_META = 'mnti_source_url';
+	public const ATT_SOURCE_URL_META = 'eimn_source_url';
 
 	/**
 	 * @param array<int,string> $image_urls
@@ -250,7 +250,7 @@ final class MediaSync {
 	/**
 	 * Télécharge plusieurs URLs en parallèle vers des fichiers temporaires.
 	 *
-	 * Utilise curl_multi_exec avec un maximum de MNTI_IMAGE_CONCURRENCY (défaut 5) slots simultanés.
+	 * Utilise curl_multi_exec avec un maximum de EIMN_IMAGE_CONCURRENCY (défaut 5) slots simultanés.
 	 * Streaming direct vers fichier — pas de spike mémoire.
 	 *
 	 * @param  array<int,string> $urls
@@ -266,16 +266,16 @@ final class MediaSync {
 		// ou backend de téléchargement alternatif). Un filtre qui retourne un tableau
 		// (map url => chemin tmp | WP_Error) court-circuite curl_multi ; sinon (null) le
 		// téléchargement normal s'exécute.
-		$pre = apply_filters( 'mnti_pre_download_urls', null, $urls, $timeout );
+		$pre = apply_filters( 'eimn_pre_download_urls', null, $urls, $timeout );
 		if ( is_array( $pre ) ) {
 			return $pre;
 		}
 
-		$concurrency = defined( 'MNTI_IMAGE_CONCURRENCY' ) ? max( 1, (int) MNTI_IMAGE_CONCURRENCY ) : 5;
+		$concurrency = defined( 'EIMN_IMAGE_CONCURRENCY' ) ? max( 1, (int) EIMN_IMAGE_CONCURRENCY ) : 5;
 
 		// Taille max d'une image téléchargée, surchargeable dans wp-config.php
-		// (define( 'MNTI_MAX_IMAGE_BYTES', n )). Défaut : 20 Mo.
-		$max_bytes = defined( 'MNTI_MAX_IMAGE_BYTES' ) ? max( 1, (int) MNTI_MAX_IMAGE_BYTES ) : 20 * 1024 * 1024;
+		// (define( 'EIMN_MAX_IMAGE_BYTES', n )). Défaut : 20 Mo.
+		$max_bytes = defined( 'EIMN_MAX_IMAGE_BYTES' ) ? max( 1, (int) EIMN_MAX_IMAGE_BYTES ) : 20 * 1024 * 1024;
 
 		$results = [];
 		$pending = array_values( $urls );
@@ -298,7 +298,7 @@ final class MediaSync {
 
 			// Garde SSRF : même validation que wp_safe_remote_get() (refus IP privées /
 			// loopback / link-local, ports 80/443/8080), surchargeable via le filtre core
-			// http_request_host_is_external. $url reste la clé d'identité (mnti_source_url) ;
+			// http_request_host_is_external. $url reste la clé d'identité (eimn_source_url) ;
 			// seule l'URL effectivement requêtée est normalisée plus bas.
 			if ( ! wp_http_validate_url( $url ) ) {
 				$results[ $url ] = new \WP_Error( 'unsafe_url', sprintf( 'URL refusée (SSRF/IP privée) : %s', $url ) );
@@ -309,7 +309,7 @@ final class MediaSync {
 			// désactivé (cf. plus bas) et une 301 http→https échouerait sinon. On ne mute
 			// PAS $url (identité), uniquement l'URL passée à cURL.
 			$request_url = preg_replace( '#^http://#i', 'https://', $url );
-			$tmp_result  = tempnam( sys_get_temp_dir(), 'mnti_img_' );
+			$tmp_result  = tempnam( sys_get_temp_dir(), 'eimn_img_' );
 			if ( false === $tmp_result ) {
 				$results[ $url ] = new \WP_Error( 'tempnam_failed', 'Impossible de créer le fichier temporaire' );
 				return;

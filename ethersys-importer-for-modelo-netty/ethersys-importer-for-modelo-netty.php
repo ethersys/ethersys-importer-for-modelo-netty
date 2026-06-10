@@ -1,19 +1,19 @@
 <?php
 /**
- * Plugin Name: Modelo Netty Importer
+ * Plugin Name: Ethersys Importer For Modelo Netty
  * Description: Syncs Modelo/Netty XML feed to Houzez property listings in WordPress. Handles create, update, delete, gallery, logs and DPE/GES.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Ethersys
  * Author URI: https://www.ethersys.fr
  * Plugin URI: https://github.com/ethersys/Modelo-Netty-Importer
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: modelo-netty-importer
+ * Text Domain: ethersys-importer-for-modelo-netty
  * Domain Path: /languages
  * Requires at least: 6.8
  * Requires PHP: 8.3
  *
- * @package Modelo\NettyImport
+ * @package Ethersys\NettyImport
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  * Copyright (C) 2026 Ethersys
@@ -28,20 +28,23 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MNTI_VERSION', (static function (): string {
-	$mnti_data = get_file_data( __FILE__, [ 'Version' => 'Version' ] );
-	return ! empty( $mnti_data['Version'] ) ? $mnti_data['Version'] : '0.0.0';
-})() );
-define( 'MNTI_PATH', plugin_dir_path( __FILE__ ) );
-define( 'MNTI_URL', plugin_dir_url( __FILE__ ) );
-define( 'MNTI_BASENAME', plugin_basename( __FILE__ ) );
+define(
+	'EIMN_VERSION',
+	( static function (): string {
+		$eimn_data = get_file_data( __FILE__, [ 'Version' => 'Version' ] );
+		return ! empty( $eimn_data['Version'] ) ? $eimn_data['Version'] : '0.0.0';
+	} )()
+);
+define( 'EIMN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'EIMN_URL', plugin_dir_url( __FILE__ ) );
+define( 'EIMN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
  * Nombre maximum de téléchargements d'images simultanés par run.
- * Surcharger dans wp-config.php : define( 'MNTI_IMAGE_CONCURRENCY', 10 );
+ * Surcharger dans wp-config.php : define( 'EIMN_IMAGE_CONCURRENCY', 10 );
  * Valeur par défaut : 5.
  */
 
-require_once MNTI_PATH . 'includes/class-plugin.php';
+require_once EIMN_PATH . 'includes/class-plugin.php';
 
-\Modelo\NettyImport\Plugin::init();
+\Ethersys\NettyImport\Plugin::init();

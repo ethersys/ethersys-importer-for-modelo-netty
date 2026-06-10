@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Modelo\NettyImport\Tests\Integration;
+namespace Ethersys\NettyImport\Tests\Integration;
 
-use Modelo\NettyImport\MediaSync;
+use Ethersys\NettyImport\MediaSync;
 
 class MediaSyncIntegrationTest extends WPTestCase
 {
@@ -24,10 +24,10 @@ class MediaSyncIntegrationTest extends WPTestCase
         ]);
 
         // Stub du téléchargement : MediaSync télécharge via curl_multi (filtre
-        // mnti_pre_download_urls). Pour toute URL https://images.test/*, on écrit
+        // eimn_pre_download_urls). Pour toute URL https://images.test/*, on écrit
         // fake-image.jpg dans un fichier temp et on retourne la map url => chemin tmp
         // attendue par sync_gallery (qui unlink ensuite ces fichiers).
-        $fake_jpg = (string) file_get_contents(MNTI_FIXTURE_DIR . '/fake-image.jpg');
+        $fake_jpg = (string) file_get_contents(EIMN_FIXTURE_DIR . '/fake-image.jpg');
         $this->image_filter = function ($pre, array $urls, int $timeout) use ($fake_jpg) {
             $out = is_array($pre) ? $pre : [];
             foreach ($urls as $url) {
@@ -35,20 +35,20 @@ class MediaSyncIntegrationTest extends WPTestCase
                     continue;
                 }
                 if (strpos($url, 'https://images.test/') === 0) {
-                    $tmp = tempnam(sys_get_temp_dir(), 'mnti_test_');
+                    $tmp = tempnam(sys_get_temp_dir(), 'eimn_test_');
                     file_put_contents($tmp, $fake_jpg);
                     $out[$url] = $tmp;
                 }
             }
             return $out;
         };
-        add_filter('mnti_pre_download_urls', $this->image_filter, 10, 3);
+        add_filter('eimn_pre_download_urls', $this->image_filter, 10, 3);
     }
 
     protected function tearDown(): void
     {
         if ($this->image_filter !== null) {
-            remove_filter('mnti_pre_download_urls', $this->image_filter, 10);
+            remove_filter('eimn_pre_download_urls', $this->image_filter, 10);
             $this->image_filter = null;
         }
 
@@ -151,11 +151,11 @@ class MediaSyncIntegrationTest extends WPTestCase
             }
             return $out;
         };
-        add_filter('mnti_pre_download_urls', $error_filter, 15, 3);
+        add_filter('eimn_pre_download_urls', $error_filter, 15, 3);
 
         $result = MediaSync::sync_gallery(0, $this->post_id, 'REF-TEST', ['https://images.test/broken.jpg']);
 
-        remove_filter('mnti_pre_download_urls', $error_filter, 15);
+        remove_filter('eimn_pre_download_urls', $error_filter, 15);
 
         $this->assertSame(0, $result['added']);
         $this->assertNull($result['featured_attachment_id']);

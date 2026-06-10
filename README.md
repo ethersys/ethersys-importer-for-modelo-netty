@@ -1,11 +1,14 @@
-# Modelo Netty Importer
+# Ethersys Importer For Modelo Netty
 
-[![Changelog](https://img.shields.io/badge/changelog-view%20details-lightgrey?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/ethersys/Modelo-Netty-Importer/blob/master/CHANGELOG.md)
-[![Release](https://img.shields.io/github/v/release/ethersys/Modelo-Netty-Importer?style=flat-square&color=blue)](https://github.com/ethersys/Modelo-Netty-Importer/releases)
-[![License](https://img.shields.io/badge/license-GPL--2.0-orange?style=flat-square)](https://github.com/ethersys/Modelo-Netty-Importer/blob/master/LICENSE)
+[![Changelog](https://img.shields.io/badge/changelog-view%20details-lightgrey?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/blob/master/CHANGELOG.md)
+[![Release](https://img.shields.io/github/v/release/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=blue)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/releases)
+[![License](https://img.shields.io/badge/license-GPL--2.0-orange?style=flat-square)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/blob/master/LICENSE)
 ![WordPress](https://img.shields.io/badge/WordPress-6.8+-21759b?style=flat-square&logo=wordpress&logoColor=white)
-![Last Commit](https://img.shields.io/github/last-commit/ethersys/Modelo-Netty-Importer/master?style=flat-square)
-[![Issues](https://img.shields.io/github/issues/ethersys/Modelo-Netty-Importer?style=flat-square&color=44cc11)](https://github.com/ethersys/Modelo-Netty-Importer/issues)
+![Last Commit](https://img.shields.io/github/last-commit/ethersys/ethersys-importer-for-modelo-netty/master?style=flat-square)
+[![Issues](https://img.shields.io/github/issues/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=44cc11)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/issues)
+
+Dépôt : [github.com/ethersys/ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty)
+Version : 1.2.0
 
 Cette extension permet de lire le flux généré par le logiciel Modelo&copy; (ex Netty&copy;) édité par Septeo&copy; et d'importer les biens en location et vente dans WordPress.
 
@@ -37,7 +40,7 @@ Pour l’**affichage réglementaire DPE / GES** (diagrammes, détails au-delà d
 
 ## Installation rapide
 
-1. Copier le dossier `modelo-netty-importer` dans `wp-content/plugins/`.
+1. Copier le dossier `ethersys-importer-for-modelo-netty` dans `wp-content/plugins/`.
 2. Activer le plugin dans **Extensions**.
 3. Régler **Import Netty** dans le menu d’administration (URL du flux, fréquence, agent).
 
@@ -55,7 +58,7 @@ Sans thème **Houzez** (ou sans type de contenu / métas compatibles), l’impor
 | Couche | Rôle |
 |--------|------|
 | **Netty → flux XML** | Source des annonces, photos, données énergie / GES et financières. |
-| **Modelo Netty Importer** | Télécharge le flux, parse le XML, crée / met à jour / supprime les annonces, synchronise les médias, journalise les exécutions, planifie les imports. |
+| **Ethersys Importer For Modelo Netty** | Télécharge le flux, parse le XML, crée / met à jour / supprime les annonces, synchronise les médias, journalise les exécutions, planifie les imports. |
 | **Houzez** | Thème et métadonnées `fave_*` pour listes, fiches, agents, recherche. |
 | **Extension DPE/GES (`[immowp_dpe_ges]`)** | Rendu détaillé du diagnostic sur la fiche bien, alimenté par les métas écrites à l’import. |
 
@@ -65,13 +68,13 @@ En complément, le plugin applique des **correctifs d’interface français** ci
 ## Que fait concrètement le plugin ?
 
 - **Import principal** : lecture équitable du flux, création ou mise à jour des biens, mapping des champs Netty → metas Houzez (+ champs DPE/GES pour l’extension shortcode).
-- **Images** : synchronisation de la galerie Houzez (`fave_property_images`) avec traçage de l’URL source. Téléchargement des images manquantes en parallèle (`MNTI_IMAGE_CONCURRENCY`, défaut 5), avec garde-fous : validation anti-SSRF des URLs (refus des IP privées / loopback via `wp_http_validate_url`), redirections HTTP non suivies, et limite de taille par image (`MNTI_MAX_IMAGE_BYTES`, défaut 20 Mo).
+- **Images** : synchronisation de la galerie Houzez (`fave_property_images`) avec traçage de l’URL source. Téléchargement des images manquantes en parallèle (`EIMN_IMAGE_CONCURRENCY`, défaut 5), avec garde-fous : validation anti-SSRF des URLs (refus des IP privées / loopback via `wp_http_validate_url`), redirections HTTP non suivies, et limite de taille par image (`EIMN_MAX_IMAGE_BYTES`, défaut 20 Mo).
 - **Suppressions** : option pour retirer de WordPress les biens absents du flux (alignement du catalogue sur Netty).
 - **Mise en avant** : correspondance avec la meta Houzez `fave_featured`.
 - **Agent / contact** : option pour forcer un agent Houzez (ID) sur toutes les annonces importées.
 - **Logs** : historique des exécutions et messages détaillés dans l’admin (**Import Netty**).
 - **Planification** : import récurrent via **WP-Cron** (sous réserve de trafic ou cron système).
-- **WP-CLI** : commande `wp mnti import` pour lancer l’import hors navigateur.
+- **WP-CLI** : commande `wp eimn import` pour lancer l’import hors navigateur.
 
 ## Options disponibles (back-office et base de données)
 
@@ -79,10 +82,10 @@ Ces réglages sont disponibles dans **WordPress Admin → Import Netty** (formul
 
 | Clé option (`get_option`) | Type | Description |
 |---------------------------|------|-------------|
-| `mnti_feed_url` | string (URL) | URL du flux XML Netty (`http` ou `https`). Obligatoire pour importer. |
-| `mnti_schedule_interval` | int (1–999) | Multiplicateur de la fréquence d’import automatique. |
-| `mnti_schedule_unit` | string | Unité : `minute`, `hour` ou `day` (avec `mnti_schedule_interval`). |
-| `mnti_default_agent_id` | int | ID de l’agent Houzez à utiliser pour le contact ; `0` = comportement par défaut (auteur du bien). |
+| `eimn_feed_url` | string (URL) | URL du flux XML Netty (`http` ou `https`). Obligatoire pour importer. |
+| `eimn_schedule_interval` | int (1–999) | Multiplicateur de la fréquence d’import automatique. |
+| `eimn_schedule_unit` | string | Unité : `minute`, `hour` ou `day` (avec `eimn_schedule_interval`). |
+| `eimn_default_agent_id` | int | ID de l’agent Houzez à utiliser pour le contact ; `0` = comportement par défaut (auteur du bien). |
 
 À l’enregistrement des réglages, le plugin **replanifie** la tâche WP-Cron d’import. Si l’URL du flux est vide ou invalide, **aucun import automatique** n’est planifié.
 
@@ -90,12 +93,12 @@ Ces réglages sont disponibles dans **WordPress Admin → Import Netty** (formul
 
 | Constante | Défaut | Description |
 |-----------|--------|-------------|
-| `MNTI_IMAGE_CONCURRENCY` | `5` | Nombre maximum de téléchargements d’images simultanés par run. Augmenter sur un serveur avec bonne bande passante, réduire en cas de contrainte réseau.<br>`define( ‘MNTI_IMAGE_CONCURRENCY’, 10 );` |
-| `MNTI_MAX_IMAGE_BYTES` | `20971520` (20 Mo) | Taille maximale d’une image téléchargée. Au-delà, l’image est ignorée et journalisée (`file_too_large`) — garde-fou contre l’épuisement disque. Valeur en octets.<br>`define( ‘MNTI_MAX_IMAGE_BYTES’, 10 * 1024 * 1024 );` |
+| `EIMN_IMAGE_CONCURRENCY` | `5` | Nombre maximum de téléchargements d’images simultanés par run. Augmenter sur un serveur avec bonne bande passante, réduire en cas de contrainte réseau.<br>`define( ‘EIMN_IMAGE_CONCURRENCY’, 10 );` |
+| `EIMN_MAX_IMAGE_BYTES` | `20971520` (20 Mo) | Taille maximale d’une image téléchargée. Au-delà, l’image est ignorée et journalisée (`file_too_large`) — garde-fou contre l’épuisement disque. Valeur en octets.<br>`define( ‘EIMN_MAX_IMAGE_BYTES’, 10 * 1024 * 1024 );` |
 
 Autres éléments exposés dans la même page d’administration :
 
-- **Lancer l’import maintenant** : exécute un import complet **de façon synchrone** dans la requête (images + suppression des manquants, comme le cron) et affiche le résultat réel au retour. Sur un très gros catalogue susceptible de dépasser le délai d’exécution du serveur web, préférer WP-CLI (`wp mnti import`) ou un cron système.
+- **Lancer l’import maintenant** : exécute un import complet **de façon synchrone** dans la requête (images + suppression des manquants, comme le cron) et affiche le résultat réel au retour. Sur un très gros catalogue susceptible de dépasser le délai d’exécution du serveur web, préférer WP-CLI (`wp eimn import`) ou un cron système.
 - **Tester la connexion au flux** : enregistre les réglages puis vérifie l’URL saisie (connexion + parsing), sans modifier les biens.
 - **Historique des exécutions** : tableau des **20 *runs* les plus récents** ; lien vers le détail et les **200 derniers logs** par run.
 
@@ -104,7 +107,7 @@ Autres éléments exposés dans la même page d’administration :
 Le support de WP-CLI est prévu pour lancer les imports manuellement.
 
 ```bash
-wp mnti import [--dry-run] [--no-delete] [--no-images]
+wp eimn import [--dry-run] [--no-delete] [--no-images]
 ```
 
 ## WP-Cron
@@ -115,10 +118,10 @@ Nous recommandons de prévoir un **cron système** afin que les tâches d'import
 
 ### Développement
 
-- **Namespace** : `Modelo\NettyImport`
-- **Préfixe hooks / transients** : `mnti_`
-- **Tables** : `{prefix}mnti_import_runs`, `{prefix}mnti_import_logs`
-- **Cache** : en fin d'import, le plugin rejoue les invalidations du **cache objet** core (uniquement s'il est persistant) sur les biens et taxonomies touchés — ciblé, jamais de purge globale. Pour les caches **page** (WP Rocket, W3TC, LiteSpeed…), branchez votre purge sur l'action `mnti_after_import` (`array $counts, int[] $touched_post_ids`).
+- **Namespace** : `Ethersys\NettyImport`
+- **Préfixe hooks / transients** : `eimn_`
+- **Tables** : `{prefix}eimn_import_runs`, `{prefix}eimn_import_logs`
+- **Cache** : en fin d'import, le plugin rejoue les invalidations du **cache objet** core (uniquement s'il est persistant) sur les biens et taxonomies touchés — ciblé, jamais de purge globale. Pour les caches **page** (WP Rocket, W3TC, LiteSpeed…), branchez votre purge sur l'action `eimn_after_import` (`array $counts, int[] $touched_post_ids`).
 
 ### Licence
 
@@ -126,4 +129,4 @@ GPLv2 ou ultérieure (comme WordPress). Voir le fichier [`LICENSE`](LICENSE) à 
 
 ## Contribuer
 
-Les contributions sont les bienvenues sur [GitHub](https://github.com/ethersys/Modelo-Netty-Importer). Voir [`CONTRIBUTING.md`](CONTRIBUTING.md) pour le workflow, les conventions de code et la procédure de test.
+Les contributions sont les bienvenues sur [GitHub](https://github.com/ethersys/ethersys-importer-for-modelo-netty). Voir [`CONTRIBUTING.md`](CONTRIBUTING.md) pour le workflow, les conventions de code et la procédure de test.

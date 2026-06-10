@@ -1,5 +1,5 @@
 {
-  "core": "https://downloads.wordpress.org/release/wordpress-6.8.5.zip",
+  "core": null,
   "phpVersion": "8.3",
   "plugins": [
     "../ethersys-importer-for-modelo-netty",

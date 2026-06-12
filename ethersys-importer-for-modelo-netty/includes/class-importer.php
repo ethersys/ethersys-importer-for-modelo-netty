@@ -19,8 +19,8 @@ namespace Ethersys\NettyImport;
 defined( 'ABSPATH' ) || exit;
 
 final class Importer {
-	public const META_REF                = 'nh_reference_technique';
-	public const META_COMPLETE_AT        = 'nh_import_complete_at';
+	public const META_REF                = 'eimn_reference_technique';
+	public const META_COMPLETE_AT        = 'eimn_import_complete_at';
 	private const OPT_DEFAULT_AGENT_ID   = 'eimn_default_agent_id';
 	private const OPT_FEED_ETAG          = 'eimn_feed_etag';
 	private const OPT_FEED_LAST_MODIFIED = 'eimn_feed_last_modified';
@@ -451,11 +451,11 @@ final class Importer {
 		self::apply_features_from_record( $run_id, $post_id, $rec, $ref );
 
 		// Champs "o/O" supplémentaires (debug / exploitation)
-		update_post_meta( $post_id, 'nh_reference_a_afficher', (string) ( $rec['reference_a_afficher'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_type_annonce', (string) ( $rec['type_annonce'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_etat', (string) ( $rec['etat'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_mise_en_avant', (string) ( $rec['mise_en_avant'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_dpe_etat', (string) ( $rec['dpe_etat'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_reference_a_afficher', (string) ( $rec['reference_a_afficher'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_type_annonce', (string) ( $rec['type_annonce'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_etat', (string) ( $rec['etat'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_mise_en_avant', (string) ( $rec['mise_en_avant'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_dpe_etat', (string) ( $rec['dpe_etat'] ?? '' ) );
 
 		// Mise en avant (Houzez) — mappe le champ Netty vers le "Featured" natif du thème.
 		// Houzez utilise la meta `fave_featured` (0/1) pour afficher les biens mis en avant
@@ -492,19 +492,19 @@ final class Importer {
 		}
 
 		// Custom metas for CSV fields without Houzez key (V1)
-		update_post_meta( $post_id, 'nh_charges', (string) ( $rec['charges'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_depot_garantie', (string) ( $rec['depot_garantie'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_honoraires_visite_dossier', (string) ( $rec['honoraires_visite_dossier'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_honoraires_etat_lieux', (string) ( $rec['honoraires_etat_lieux'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_honoraires_locataire', (string) ( $rec['honoraires_locataire'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_wc', (string) ( $rec['wc'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_type_cuisine', (string) ( $rec['type_cuisine'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_type_chauffage', (string) ( $rec['type_chauffage'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_chauffages', (string) ( $rec['chauffages'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_climatisations', (string) ( $rec['climatisations'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_ameublement', (string) ( $rec['ameublement'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_stationnement_interne', (string) ( $rec['stationnement_interne'] ?? '' ) );
-		update_post_meta( $post_id, 'nh_stationnement_externe', (string) ( $rec['stationnement_externe'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_charges', (string) ( $rec['charges'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_depot_garantie', (string) ( $rec['depot_garantie'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_honoraires_visite_dossier', (string) ( $rec['honoraires_visite_dossier'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_honoraires_etat_lieux', (string) ( $rec['honoraires_etat_lieux'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_honoraires_locataire', (string) ( $rec['honoraires_locataire'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_wc', (string) ( $rec['wc'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_type_cuisine', (string) ( $rec['type_cuisine'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_type_chauffage', (string) ( $rec['type_chauffage'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_chauffages', (string) ( $rec['chauffages'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_climatisations', (string) ( $rec['climatisations'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_ameublement', (string) ( $rec['ameublement'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_stationnement_interne', (string) ( $rec['stationnement_interne'] ?? '' ) );
+		update_post_meta( $post_id, 'eimn_stationnement_externe', (string) ( $rec['stationnement_externe'] ?? '' ) );
 
 		// DPE/GES (Houzez)
 		update_post_meta( $post_id, 'fave_energy_class', (string) ( $rec['bilan_energie'] ?? '' ) );

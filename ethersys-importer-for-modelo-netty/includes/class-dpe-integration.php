@@ -42,7 +42,7 @@ final class DpeIntegration {
 
 		// Render server-side; JS will move it into the Houzez energy block.
 		self::$rendered = true;
-		echo '<div id="nti-immowp-dpe-ges" style="display:none">';
+		echo '<div id="eimn-immowp-dpe-ges" style="display:none">';
 		echo do_shortcode( '[immowp_dpe_ges]' );
 		echo '</div>';
 	}
@@ -60,12 +60,12 @@ final class DpeIntegration {
   function ensureSection(hostSection) {
     if (!hostSection) return null;
 
-    var existing = hostSection.querySelector('.nh-dpe-ges-section');
+    var existing = hostSection.querySelector('.eimn-dpe-ges-section');
     if (existing) return existing;
 
     // Create a Houzez-like block inside the Details section.
     var wrap = document.createElement('div');
-    wrap.className = 'block-wrap nh-dpe-ges-section';
+    wrap.className = 'block-wrap eimn-dpe-ges-section';
 
     var titleWrap = document.createElement('div');
     titleWrap.className = 'block-title-wrap d-flex justify-content-between align-items-center';
@@ -86,7 +86,7 @@ final class DpeIntegration {
   }
 
   function move() {
-    var container = document.getElementById('nti-immowp-dpe-ges');
+    var container = document.getElementById('eimn-immowp-dpe-ges');
     if (!container) return;
 
     // Prefer inserting as its own Houzez block inside the Details section.
@@ -127,8 +127,8 @@ final class DpeIntegration {
 JS;
 
 		// Register a tiny inline script without shipping a JS file.
-		wp_register_script( 'nh-dpe-move', '', [], EIMN_VERSION, true );
-		wp_enqueue_script( 'nh-dpe-move' );
-		wp_add_inline_script( 'nh-dpe-move', $js );
+		wp_register_script( 'eimn-dpe-move', '', [], EIMN_VERSION, true );
+		wp_enqueue_script( 'eimn-dpe-move' );
+		wp_add_inline_script( 'eimn-dpe-move', $js );
 	}
 }

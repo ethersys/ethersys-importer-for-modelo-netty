@@ -19,7 +19,7 @@ namespace Ethersys\NettyImport;
 defined( 'ABSPATH' ) || exit;
 
 final class Admin {
-	private const MENU_SLUG             = 'nti-import';
+	private const MENU_SLUG             = 'eimn-import';
 	private const OPT_FEED_URL          = 'eimn_feed_url';
 	private const OPT_SCHEDULE_INTERVAL = 'eimn_schedule_interval';
 	private const OPT_SCHEDULE_UNIT     = 'eimn_schedule_unit';

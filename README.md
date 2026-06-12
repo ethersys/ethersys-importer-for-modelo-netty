@@ -8,7 +8,7 @@
 [![Issues](https://img.shields.io/github/issues/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=44cc11)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/issues)
 
 Dépôt : [github.com/ethersys/ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty)
-Version : 1.2.1
+Version : 1.2.5
 
 Cette extension permet de lire le flux généré par le logiciel Modelo&copy; (ex Netty&copy;) édité par Septeo&copy; et d'importer les biens en location et vente dans WordPress.
 

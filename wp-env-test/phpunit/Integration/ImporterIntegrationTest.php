@@ -52,7 +52,7 @@ class ImporterIntegrationTest extends WPTestCase
         $this->assertStringStartsWith('mois', (string) get_post_meta($post_id, 'fave_property_price_postfix', true));
     }
 
-    public function test_import_sets_nh_metas(): void
+    public function test_import_sets_eimn_metas(): void
     {
         $xml  = (string) file_get_contents($this->fixturesDir . '/feed-minimal.xml');
         $hook = $this->stub_feed($xml);
@@ -63,8 +63,8 @@ class ImporterIntegrationTest extends WPTestCase
         $this->assertNotNull($post_id);
 
         $this->assertSame('REF-001', get_post_meta($post_id, Importer::META_REF, true));
-        $this->assertSame('50', get_post_meta($post_id, 'nh_charges', true));
-        $this->assertSame('location', get_post_meta($post_id, 'nh_type_annonce', true));
+        $this->assertSame('50', get_post_meta($post_id, 'eimn_charges', true));
+        $this->assertSame('location', get_post_meta($post_id, 'eimn_type_annonce', true));
     }
 
     public function test_reimport_updates_existing_property(): void

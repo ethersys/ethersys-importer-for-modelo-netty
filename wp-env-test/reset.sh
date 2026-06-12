@@ -7,15 +7,15 @@ cd "$SCRIPT_DIR"
 # ── Config locale ──────────────────────────────────────────────────────────
 if [ ! -f .env ]; then
   echo "ERREUR : fichier .env absent."
-  echo "  Copier .env.example → .env puis renseigner MNTI_FEED_URL."
+  echo "  Copier .env.example → .env puis renseigner EIMN_FEED_URL."
   exit 1
 fi
 
 # shellcheck source=.env
 source .env
 
-if [ -z "${MNTI_FEED_URL:-}" ]; then
-  echo "ERREUR : MNTI_FEED_URL non définie dans .env."
+if [ -z "${EIMN_FEED_URL:-}" ]; then
+  echo "ERREUR : EIMN_FEED_URL non définie dans .env."
   exit 1
 fi
 
@@ -25,14 +25,18 @@ wp-env reset --yes
 
 # ── Réactivation du plugin (crée les tables custom) ───────────────────────
 echo "→ Réactivation du plugin (création des tables)..."
-wp-env run cli wp plugin deactivate modelo-netty-importer
-wp-env run cli wp plugin activate modelo-netty-importer
+wp-env run cli wp plugin deactivate ethersys-importer-for-modelo-netty
+wp-env run cli wp plugin activate ethersys-importer-for-modelo-netty
+
+# ── Plugin Check (PCP) — installé sans activation ─────────────────────────
+echo "→ Installation de Plugin Check (PCP)..."
+wp-env run cli wp plugin install plugin-check --no-activate
 
 # ── Restauration des options ───────────────────────────────────────────────
 echo "→ Restauration des options..."
-wp-env run cli wp option update mnti_feed_url "$MNTI_FEED_URL"
-wp-env run cli wp option update mnti_schedule_interval 24
-wp-env run cli wp option update mnti_schedule_unit hours
+wp-env run cli wp option update eimn_feed_url "$EIMN_FEED_URL"
+wp-env run cli wp option update eimn_schedule_interval 24
+wp-env run cli wp option update eimn_schedule_unit hours
 
 # ── Permaliens ────────────────────────────────────────────────────────────
 wp-env run cli wp rewrite structure '/%postname%/' --hard

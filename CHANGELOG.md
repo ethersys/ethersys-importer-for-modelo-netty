@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.5] - 2026-06-12
+
+Mise en conformité complète avec les règles de préfixage WordPress.org.
+
+### Changements
+
+- **Post meta `nh_*` → `eimn_*`** : toutes les clés de métadonnées propriétaires renommées (`nh_reference_technique`, `nh_charges`, `nh_type_annonce`, etc.) *(breaking change pour les installations existantes)*
+- **Slug menu admin** : `nti-import` → `eimn-import`
+- **Handle script DPE** : `nh-dpe-move` → `eimn-dpe-move`
+- **HTML/CSS DPE** : `id="nti-immowp-dpe-ges"` et classe `nh-dpe-ges-section` → préfixe `eimn-`
+- **Variable d'environnement** : `MNTI_FEED_URL` → `EIMN_FEED_URL` dans `setup.sh`, `reset.sh` et `.env.example`
+- **`reset.sh`** : slug plugin corrigé (`modelo-netty-importer` → `ethersys-importer-for-modelo-netty`)
+- **Plugin Check (PCP)** : ajouté à `setup.sh` et `reset.sh` (installé sans activation)
+
 ## [1.2.1] - 2026-06-10
 
 ### Corrections

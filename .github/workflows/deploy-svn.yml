@@ -14,11 +14,55 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Déploiement vers le SVN WordPress.org
-      - name: WordPress Plugin Deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+      - name: Prepare version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Install SVN tools
+        run: sudo apt-get update && sudo apt-get install -y subversion rsync
+
+      - name: Checkout WordPress.org SVN
+        run: svn checkout --depth infinity "https://plugins.svn.wordpress.org/ethersys-importer-for-modelo-netty" svn
+
+      - name: Sync latest plugin release
+        run: |
+          set -euo pipefail
+
+          mkdir -p "svn/trunk" "svn/tags/${VERSION}"
+
+          find svn/trunk -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          find "svn/tags/${VERSION}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+
+          for tag in svn/tags/*; do
+            [ -e "$tag" ] || continue
+            [ "$(basename "$tag")" = "${VERSION}" ] && continue
+            svn rm --force "$tag"
+          done
+
+          rsync -a --delete "ethersys-importer-for-modelo-netty/" "svn/trunk/"
+          rsync -a --delete "ethersys-importer-for-modelo-netty/" "svn/tags/${VERSION}/"
+
+          cd svn
+          svn add --force trunk "tags/${VERSION}" --depth infinity
+          svn status | awk '/^!/ { print $2 }' | xargs -r svn rm --force
+
+      - name: Commit to WordPress.org SVN
+        working-directory: svn
         env:
           SVN_USERNAME: ${{ secrets.ETHERSYS_WORDPRESS_LOGIN }}
           SVN_PASSWORD: ${{ secrets.ETHERSYS_WORDPRESS_PASSWORD }}
-          # C'est ici que la magie opère pour votre sous-dossier :
-          SLUG: ethersys-importer-for-modelo-netty
+        run: |
+          set -euo pipefail
+
+          svn status
+
+          if [ -z "$(svn status)" ]; then
+            echo "No SVN changes to commit."
+            exit 0
+          fi
+
+          svn commit \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            --non-interactive \
+            --trust-server-cert \
+            -m "Deploy version ${VERSION}"

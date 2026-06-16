@@ -1,0 +1,24 @@
+name: Deploy to WordPress.org SVN
+
+on:
+  push:
+    # Le workflow se déclenche uniquement lorsqu'un tag de version est poussé (ex: v1.0.3)
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Récupération du code source de GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Déploiement vers le SVN WordPress.org
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.ETHERSYS_WORDPRESS_LOGIN }}
+          SVN_PASSWORD: ${{ secrets.ETHERSYS_WORDPRESS_PASSWORD }}
+          # C'est ici que la magie opère pour votre sous-dossier :
+          SLUG: ethersys-importer-for-modelo-netty

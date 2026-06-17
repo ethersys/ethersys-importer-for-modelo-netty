@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ethersys Importer For Modelo Netty
  * Description: Syncs Modelo/Netty XML feed to Houzez property listings in WordPress. Handles create, update, delete, gallery, logs and DPE/GES.
- * Version: 1.2.6
+ * Version: 1.2.7
  * Author: Ethersys
  * Author URI: https://www.ethersys.fr
  * Plugin URI: https://github.com/ethersys/ethersys-importer-for-modelo-netty/

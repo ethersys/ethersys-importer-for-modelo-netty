@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7] - 2026-06-17
+
+### Corrections
+
+- **Déploiement SVN WordPress.org** : le workflow `deploy-svn.yml` supprimait tous les anciens tags SVN sauf le courant à chaque déploi, empêchant tout rollback (WordPress.org signalait `/tags/1.2.5/` introuvable). Les anciens tags ne sont plus purgés.
+- **`Stable tag` désynchronisé** : `readme.txt` gardait `Stable tag: 1.2.5` alors que la version courante avançait. Le workflow synchronise désormais automatiquement ce champ avec la version du tag déployé.
+
 ## [1.2.6] - 2026-06-17
 
 ### Corrections

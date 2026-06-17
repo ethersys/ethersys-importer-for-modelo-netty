@@ -32,11 +32,10 @@ jobs:
           find svn/trunk -mindepth 1 -maxdepth 1 -exec rm -rf {} +
           find "svn/tags/${VERSION}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 
-          for tag in svn/tags/*; do
-            [ -e "$tag" ] || continue
-            [ "$(basename "$tag")" = "${VERSION}" ] && continue
-            svn rm --force "$tag"
-          done
+          # Ne jamais purger les anciens tags : WordPress.org s'appuie sur leur
+          # présence sur SVN pour permettre le rollback d'une version publiée.
+
+          sed -i -E "s/^Stable tag: .*/Stable tag: ${VERSION}/" "ethersys-importer-for-modelo-netty/readme.txt"
 
           rsync -a --delete "ethersys-importer-for-modelo-netty/" "svn/trunk/"
           rsync -a --delete "ethersys-importer-for-modelo-netty/" "svn/tags/${VERSION}/"

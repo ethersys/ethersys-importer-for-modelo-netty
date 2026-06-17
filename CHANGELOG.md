@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.6] - 2026-06-17
+
+### Corrections
+
+- **Sync features sans thème Houzez** : `apply_features_from_record()` plantait (warnings PHP "Array to string conversion", puis "headers already sent") quand la taxonomie `property_feature` n'existe pas (thème Houzez absent). Ajout d'un garde `taxonomy_exists()` + gestion de l'erreur `wp_get_post_terms()` via `is_wp_error()`, loggée en `feature_sync_failed`.
+
 ## [1.2.5] - 2026-06-12
 
 Mise en conformité complète avec les règles de préfixage WordPress.org.

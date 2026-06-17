@@ -599,10 +599,27 @@ final class Importer {
 			$desired[] = $label;
 		}
 
+		if ( ! taxonomy_exists( 'property_feature' ) ) {
+			return;
+		}
+
 		// Sync (add/remove) only the features we manage, without touching others.
 		$managed_labels = array_values( $feature_map );
 		$existing       = wp_get_post_terms( $post_id, 'property_feature', [ 'fields' => 'names' ] );
-		$kept           = array_values( array_diff( (array) $existing, $managed_labels ) );
+		if ( is_wp_error( $existing ) ) {
+			Logger::log_error(
+				$run_id,
+				'feature_sync_failed',
+				$existing->get_error_message(),
+				[
+					'taxonomy'            => 'property_feature',
+					'reference_technique' => $ref,
+					'post_id'             => $post_id,
+				]
+			);
+			return;
+		}
+		$kept = array_values( array_diff( (array) $existing, $managed_labels ) );
 		$final          = array_values( array_unique( array_merge( $kept, $desired ) ) );
 
 		// Ensure terms exist

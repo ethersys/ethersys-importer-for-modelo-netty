@@ -18,19 +18,19 @@ Independent community project — not affiliated with, endorsed by, or approved 
 
 Key features:
 
-* Recurring import (WP-Cron) or manual trigger (admin dashboard / WP-CLI `wp mnti import`).
-* Create, update and delete properties in sync with the feed (stable identity via `nh_reference_technique`).
+* Recurring import (WP-Cron) or manual trigger (admin dashboard / WP-CLI `wp eimn import`).
+* Create, update and delete properties in sync with the feed (stable identity via `eimn_reference_technique`).
 * Gallery sync with SSRF protection, disabled redirects and per-image size limit.
 * Field mapping from Netty to Houzez metadata (`fave_*`) and to DPE/GES fields expected by `[immowp_dpe_ges]`.
 * Run history and detailed logs in the admin dashboard.
 
 **No secrets stored in code** — the feed URL and schedule are configured in the admin settings after activation.
 
-Source code and contributions: https://github.com/ethersys/Modelo-Netty-Importer
+Source code and contributions: https://github.com/ethersys/ethersys-importer-for-modelo-netty
 
 == Installation ==
 
-1. Copy the `modelo-netty-importer` folder into `wp-content/plugins/`.
+1. Copy the `ethersys-importer-for-modelo-netty` folder into `wp-content/plugins/`.
 2. Activate the plugin in **Plugins**.
 3. Configure **Import Netty** in the admin menu (feed URL, schedule, agent).
 
@@ -45,6 +45,21 @@ The plugin is designed for the Houzez data model (post type `property`, meta key
 The detailed DPE/GES block requires a plugin providing the `[immowp_dpe_ges]` shortcode (e.g. ImmoWP Diagnostic DPE GES). Without it, Houzez energy fields are still synced but the advanced block is disabled.
 
 == Changelog ==
+
+= 1.2.7 =
+Le déploiement SVN WordPress.org ne purge plus les anciens tags (rollback cassé) ; le champ Stable tag est désormais synchronisé automatiquement avec la version déployée.
+
+= 1.2.6 =
+Correction des warnings PHP (et "headers already sent") lors de la sync des features quand le thème Houzez est absent.
+
+= 1.2.5 =
+Mise en conformité WordPress.org : préfixage `eimn_` pour les meta keys, slugs, handles et variables d'environnement (anciennement `nh_`/`nti`/`mnti`).
+
+= 1.2.1 =
+Correction du Plugin URI et de la version WordPress épinglée pour les tests d'intégration.
+
+= 1.2.0 =
+Renommage complet du projet (`Modelo-Netty-Importer` → `ethersys-importer-for-modelo-netty`) et correction de sécurité.
 
 = 1.1.0 =
 Preparation for WordPress Plugin Directory: rename plugin folder to `modelo-netty-importer`, add `readme.txt`, fix Plugin URI, update CI release workflow and all tooling references.

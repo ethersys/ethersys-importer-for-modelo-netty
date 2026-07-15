@@ -20,7 +20,7 @@ wp eimn import [--dry-run] [--no-delete] [--no-images]
 Suite de tests dans `tests/` (PHPUnit + fixtures). Environnement `wp-env-test/` pour tests intégration.
 
 **Versions testées** (matrice complète validée ✅):
-- WordPress: 6.8.5, 6.9.4, 7.0
+- WordPress: 6.8.5, 6.9.4, 7.0.1
 - PHP: 8.3, 8.4, 8.5
 - Tous les 9 combos passent
 
@@ -29,7 +29,7 @@ Suite de tests dans `tests/` (PHPUnit + fixtures). Environnement `wp-env-test/` 
 # Unit tests (PHP 8.3, 8.4, 8.5)
 composer test
 
-# Integration tests matrice complète (WP 6.8.5/6.9.4/7.0 × PHP 8.3/8.4/8.5)
+# Integration tests matrice complète (WP 6.8.5/6.9.4/7.0.1 × PHP 8.3/8.4/8.5)
 # Durée: ~10-15 min pour 9 combos (~1-2 min chacun)
 cd wp-env-test && bash test-matrix.sh
 

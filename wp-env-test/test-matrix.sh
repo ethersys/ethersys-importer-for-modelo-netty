@@ -16,9 +16,9 @@ REPO_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 WP_VERSIONS=(
   "WordPress/WordPress#6.8.5"
   "WordPress/WordPress#6.9.4"
-  "WordPress/WordPress#7.0"
+  "WordPress/WordPress#7.0.1"
 )
-WP_LABELS=("6.8.5" "6.9.4" "7.0")
+WP_LABELS=("6.8.5" "6.9.4" "7.0.1")
 PHP_VERSIONS=("8.3" "8.4" "8.5")
 
 PASSED_COMBOS=()

@@ -3,7 +3,8 @@
   "phpVersion": "8.3",
   "plugins": [
     "../ethersys-importer-for-modelo-netty",
-    "./houzez-stub"
+    "./houzez-stub",
+    "https://downloads.wordpress.org/plugin/wordpress-beta-tester.zip"
   ],
   "themes": [],
   "mappings": {

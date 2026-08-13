@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.8] - 2026-08-13
+
+### Changements
+
+- **Compatibilité WordPress 7.1** : `Tested up to` passé à 7.1 dans `readme.txt`, suite à validation de la matrice de tests (`wp-env-test/test-matrix.sh`) sur WordPress 7.1-RC3, PHP 8.3/8.4/8.5.
+
 ## [1.2.7] - 2026-06-17
 
 ### Corrections

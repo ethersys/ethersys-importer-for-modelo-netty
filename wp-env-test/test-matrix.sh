@@ -13,13 +13,58 @@ REPO_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 # Refs git WordPress/WordPress#X.Y.Z : les URLs zip cassent la résolution
 # d'image Docker de wp-env (basename "wordpress-6.8.5" tronqué en "wordpress-6",
 # collision de cache entre versions 6.x). Voir commit 2efa024.
-WP_VERSIONS=(
-  "WordPress/WordPress#6.8.5"
-  "WordPress/WordPress#6.9.4"
-  "WordPress/WordPress#7.0"
-)
-WP_LABELS=("6.8.5" "6.9.4" "7.0")
+#
+# Le dernier tag patch de chaque branche mineure suivie est résolu
+# dynamiquement via les tags GitHub (au lieu d'un numéro figé en dur) :
+# les patchs sortent régulièrement et la matrice doit rester à jour sans
+# édition manuelle. Fallback sur une valeur connue si l'API échoue
+# (réseau, jq absent, rate-limit GitHub non-authentifié).
+MINOR_BRANCHES=("6.8" "6.9" "7.0")
+FALLBACK_PATCH=("6.8.8" "6.9.7" "7.0.4")
+
+WP_VERSIONS=()
+WP_LABELS=()
+
+if command -v jq &>/dev/null; then
+  GH_TAGS=$(curl -s "https://api.github.com/repos/WordPress/WordPress/tags?per_page=100" || true)
+fi
+
+for i in "${!MINOR_BRANCHES[@]}"; do
+  BRANCH="${MINOR_BRANCHES[$i]}"
+  LATEST=""
+  if [ -n "$GH_TAGS" ]; then
+    LATEST=$(echo "$GH_TAGS" | jq -r '.[].name' 2>/dev/null \
+      | grep -E "^${BRANCH//./\\.}\.[0-9]+$" \
+      | sort -V | tail -1)
+  fi
+  if [ -z "$LATEST" ]; then
+    LATEST="${FALLBACK_PATCH[$i]}"
+    echo -e "${YELLOW}⚠ Résolution tag $BRANCH.x échouée, fallback sur $LATEST${NC}"
+  fi
+  WP_VERSIONS+=("WordPress/WordPress#$LATEST")
+  WP_LABELS+=("$LATEST")
+done
+
 PHP_VERSIONS=("8.3" "8.4" "8.5")
+
+# Ajout dynamique de la dernière bêta/RC en cours (ex: 7.1-RC3), si une
+# existe. Interroge la même API que core utilise en interne pour
+# channel=beta (cf. plugin wordpress-beta-tester). Best-effort : en cas
+# d'erreur réseau/jq absent, on continue sans ce combo plutôt que de
+# faire échouer toute la matrice.
+if command -v jq &>/dev/null; then
+  BETA_JSON=$(curl -s "https://api.wordpress.org/core/version-check/1.7/?channel=beta" || true)
+  BETA_URL=$(echo "$BETA_JSON" | jq -r '[.offers[] | select(.response=="development")][0].download // empty' 2>/dev/null)
+  BETA_LABEL=$(echo "$BETA_JSON" | jq -r '[.offers[] | select(.response=="development")][0].version // empty' 2>/dev/null)
+
+  if [ -n "$BETA_URL" ] && [ -n "$BETA_LABEL" ]; then
+    WP_VERSIONS+=("$BETA_URL")
+    WP_LABELS+=("$BETA_LABEL (bêta/RC)")
+    echo -e "${YELLOW}→ Bêta/RC détectée : $BETA_LABEL, ajoutée à la matrice${NC}\n"
+  fi
+else
+  echo -e "${YELLOW}⚠ jq absent, pas de détection auto de la dernière bêta/RC${NC}\n"
+fi
 
 PASSED_COMBOS=()
 FAILED_COMBOS=()
@@ -52,7 +97,16 @@ for i in "${!WP_VERSIONS[@]}"; do
       cd "$SCRIPT_DIR"
       export WP_ENV_CORE="$WP_VERSION"
       export WP_ENV_PHP_VERSION="$PHP_VERSION"
-      wp-env reset --yes >/dev/null 2>&1
+      # Un core en URL zip (combo bêta/RC dynamique) tronque le basename
+      # au premier point (ex "wordpress-7.1-RC3" -> "wordpress-7"),
+      # collision possible avec l'image cachée du combo "7.0" précédent.
+      # "destroy" force la reconstruction plutôt qu'un "reset" qui
+      # réutiliserait l'image potentiellement erronée.
+      if [[ "$WP_VERSION" == http* ]]; then
+        wp-env destroy --force >/dev/null 2>&1
+      else
+        wp-env reset --yes >/dev/null 2>&1
+      fi
       wp-env start >/dev/null 2>&1
       sleep 15
       # Le statut du combo = exit code phpunit (l'ancien grep "OK|FAILED"

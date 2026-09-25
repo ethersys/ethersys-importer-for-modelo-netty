@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.9] - 2026-09-25
+
+### Changements
+
+- **WordPress minimum 6.9** : `Requires at least` passé de 6.8 à 6.9 (en-tête du plugin, `readme.txt`, `README.md`), la branche 6.8 n'étant plus testée.
+
+### Tests
+
+- **CI** : les tests d'intégration ne s'exécutaient pas. Le workflow installait le paquet npm `wp-env`, un stub déprécié qui affiche seulement « Please run npx @wordpress/env » et sort en succès. Il installe maintenant `@wordpress/env` et lance réellement les suites.
+- **Matrice** : `test-matrix.sh` et la CI lancent maintenant les suites `wp-env-test/phpunit/Unit` et `wp-env-test/phpunit/Integration` en plus de `tests/Unit`. Avant, seuls les 11 tests unitaires racine tournaient.
+- **Versions testées** : dernier patch des branches WordPress 6.9, 7.0 et 7.1 (6.8 retirée), résolu dynamiquement dans la CI comme dans `test-matrix.sh`.
+- **Versions PHP** : `test-matrix.sh` re-télécharge les images Docker de base avant la matrice, pour tester le dernier patch de chaque branche PHP (wp-env ne les met jamais à jour seul).
+- **Dépendances** : `wp-phpunit/wp-phpunit` passe en `^7.1` ; `phpcsstandards/php_codesniffer` (abandonné) remplacé par `squizlabs/php_codesniffer`.
+- **PHPStan** : chemins de `phpstan.neon` corrigés (ancien dossier `modelo-netty-importer/`).
+- **GitHub Actions** : `actions/checkout@v7`, `actions/cache@v6`, `actions/setup-node@v7` et Node 24 (fin de l'avertissement de dépréciation Node.js 20).
+
 ## [1.2.8] - 2026-08-13
 
 ### Changements

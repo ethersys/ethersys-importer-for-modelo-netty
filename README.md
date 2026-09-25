@@ -3,12 +3,14 @@
 [![Changelog](https://img.shields.io/badge/changelog-view%20details-lightgrey?style=flat-square&logo=gitbook&logoColor=white)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/blob/master/CHANGELOG.md)
 [![Release](https://img.shields.io/github/v/release/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=blue)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/releases)
 [![License](https://img.shields.io/badge/license-GPL--2.0-orange?style=flat-square)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/blob/master/LICENSE)
-![WordPress](https://img.shields.io/badge/WordPress-6.8+-21759b?style=flat-square&logo=wordpress&logoColor=white)
+![WordPress](https://img.shields.io/badge/WordPress-6.9+-21759b?style=flat-square&logo=wordpress&logoColor=white)
 ![Last Commit](https://img.shields.io/github/last-commit/ethersys/ethersys-importer-for-modelo-netty/master?style=flat-square)
 [![Issues](https://img.shields.io/github/issues/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=44cc11)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/issues)
 
-Dépôt : [github.com/ethersys/ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty)
-Version : 1.2.8
+Dépôt officiel : [github.com/ethersys/ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty)
+Version : 1.2.9
+
+WordPress Plugin Directory : [https://fr.wordpress.org/plugins/ethersys-importer-for-modelo-netty/](https://fr.wordpress.org/plugins/ethersys-importer-for-modelo-netty/)
 
 Cette extension permet de lire le flux généré par le logiciel Modelo&copy; (ex Netty&copy;) édité par Septeo&copy; et d'importer les biens en location et vente dans WordPress.
 
@@ -22,7 +24,7 @@ ETHERSYS est un hébergeur web toulousain spécialisé WordPress qui propose des
 
 ## Prérequis : thème Houzez et affichage DPE / GES
 
-- **WordPress** récent (6.8+) et **PHP 8.3+**.
+- **WordPress** récent (6.9+) et **PHP 8.3+**.
 
 - **Thème Houzez**.
 

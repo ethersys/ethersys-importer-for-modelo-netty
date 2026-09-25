@@ -1,7 +1,8 @@
 name: Tests
 
 # Matrice de compatibilité:
-# WordPress: 6.8.5, 6.9.4, 7.0.1
+# WordPress: dernier patch des branches 6.9, 7.0 et 7.1 (résolu via les tags
+# GitHub WordPress/WordPress, comme wp-env-test/test-matrix.sh)
 # PHP: 8.3, 8.4, 8.5
 
 on:
@@ -18,7 +19,7 @@ jobs:
       matrix:
         php-version: ['8.3', '8.4', '8.5']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -27,7 +28,7 @@ jobs:
           tools: composer
 
       - name: Cache Composer packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
@@ -39,20 +40,39 @@ jobs:
       - name: Run tests
         run: composer test
 
+  resolve-wp-versions:
+    name: Resolve WordPress versions
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.resolve.outputs.versions }}
+    steps:
+      - id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAGS=$(gh api "repos/WordPress/WordPress/tags?per_page=100" --jq '.[].name')
+          VERSIONS=$(for BRANCH in 6.9 7.0 7.1; do
+            echo "$TAGS" | grep -E "^${BRANCH//./\\.}\.[0-9]+$" | sort -V | tail -1
+          done | jq -R . | jq -sc .)
+          echo "versions=$VERSIONS" >> "$GITHUB_OUTPUT"
+          echo "WordPress: $VERSIONS"
+
   integration-tests:
     name: Integration Tests (WP ${{ matrix.wp-version }}, PHP ${{ matrix.php-version }})
+    needs: resolve-wp-versions
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        wp-version: ['6.8.5', '6.9.4', '7.0.1']
+        wp-version: ${{ fromJSON(needs.resolve-wp-versions.outputs.versions) }}
         php-version: ['8.3', '8.4', '8.5']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -61,45 +81,51 @@ jobs:
           tools: composer
 
       - name: Cache Composer packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
-          path: vendor
+          path: |
+            vendor
+            wp-env-test/phpunit/vendor
           key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-php${{ matrix.php-version }}-
 
-      - name: Install npm dependencies
-        run: npm install -g wp-env
+      # Le paquet npm "wp-env" est un stub déprécié qui n'exécute rien
+      # (il affiche seulement "Please run npx @wordpress/env").
+      - name: Install wp-env
+        run: npm install -g @wordpress/env
 
       - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
-
-      - name: Setup test environment
         run: |
-          cat > wp-env-test/.wp-env.json << EOF
-          {
-            "core": "${{ matrix.wp-version }}",
-            "phpVersion": "${{ matrix.php-version }}",
-            "plugins": [
-              "../ethersys-importer-for-modelo-netty",
-              "./houzez-stub"
-            ],
-            "themes": [],
-            "mappings": {
-              "wp-content/mnti-tests": "./phpunit"
-            },
-            "config": {
-              "WPLANG": "fr_FR"
-            },
-            "testsEnvironment": false
-          }
-          EOF
+          composer install --no-progress --prefer-dist --optimize-autoloader
+          composer install --no-progress --prefer-dist --optimize-autoloader --working-dir=wp-env-test/phpunit
 
+      # Surcharge par variables d'environnement : .wp-env.json reste intact.
+      # Ref git plutôt qu'URL zip (cf. commentaire de test-matrix.sh).
       - name: Start wp-env
-        run: cd wp-env-test && wp-env start --update
+        working-directory: wp-env-test
+        env:
+          WP_ENV_CORE: WordPress/WordPress#${{ matrix.wp-version }}
+          WP_ENV_PHP_VERSION: ${{ matrix.php-version }}
+        run: |
+          wp-env start
+          wp-env run cli wp core version
+
+      # WP_TESTS_DIR retiré : sinon tests/bootstrap.php charge la lib de
+      # tests WP, qui réinstalle WordPress dans la base wp-env partagée et
+      # désactive le plugin avant la suite d'intégration.
+      - name: Run unit tests (WordPress container)
+        working-directory: wp-env-test
+        run: wp-env run cli bash -c "cd /var/www/html && env -u WP_TESTS_DIR vendor/bin/phpunit"
+
+      - name: Run Brain Monkey unit tests
+        working-directory: wp-env-test
+        run: wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.unit.xml"
 
       - name: Run integration tests
-        run: cd wp-env-test && wp-env run tests bash -c "cd /var/www/html && composer test"
+        working-directory: wp-env-test
+        run: wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.integration.xml"
 
       - name: Cleanup
         if: always()
-        run: cd wp-env-test && wp-env stop
+        working-directory: wp-env-test
+        run: wp-env stop || true

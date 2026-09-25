@@ -19,8 +19,8 @@ REPO_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 # les patchs sortent régulièrement et la matrice doit rester à jour sans
 # édition manuelle. Fallback sur une valeur connue si l'API échoue
 # (réseau, jq absent, rate-limit GitHub non-authentifié).
-MINOR_BRANCHES=("6.8" "6.9" "7.0")
-FALLBACK_PATCH=("6.8.8" "6.9.7" "7.0.4")
+MINOR_BRANCHES=("6.9" "7.0" "7.1")
+FALLBACK_PATCH=("6.9.9" "7.0.6" "7.1.2")
 
 WP_VERSIONS=()
 WP_LABELS=()
@@ -47,7 +47,10 @@ done
 
 PHP_VERSIONS=("8.3" "8.4" "8.5")
 
-# Ajout dynamique de la dernière bêta/RC en cours (ex: 7.1-RC3), si une
+# Suite de tests wp-env-test/phpunit/, montée dans le container (cf. .wp-env.json).
+EIMN_TESTS="/var/www/html/wp-content/eimn-tests"
+
+# Ajout dynamique de la dernière bêta/RC en cours (ex: 7.2-RC1), si une
 # existe. Interroge la même API que core utilise en interne pour
 # channel=beta (cf. plugin wordpress-beta-tester). Best-effort : en cas
 # d'erreur réseau/jq absent, on continue sans ce combo plutôt que de
@@ -80,6 +83,20 @@ if ! command -v wp-env &>/dev/null; then
   exit 1
 fi
 
+if [ ! -x "$SCRIPT_DIR/phpunit/vendor/bin/phpunit" ] || [ ! -x "$REPO_ROOT/vendor/bin/phpunit" ]; then
+  echo -e "${RED}✗ Dépendances absentes. Lancer : composer install (racine et wp-env-test/phpunit)${NC}"
+  exit 1
+fi
+
+# wp-env construit ses images à partir de wordpress:phpX.Y et
+# wordpress:cli-phpX.Y sans jamais les re-télécharger : sans pull explicite,
+# un cache local ancien fige le patch PHP testé (ex. 8.5.10 au lieu de 8.5.11).
+echo -e "${YELLOW}→ Mise à jour des images PHP (dernier patch de chaque branche)${NC}"
+for PHP_VERSION in "${PHP_VERSIONS[@]}"; do
+  docker pull -q "wordpress:php$PHP_VERSION" >/dev/null || echo -e "${YELLOW}⚠ Pull wordpress:php$PHP_VERSION échoué, image locale conservée${NC}"
+  docker pull -q "wordpress:cli-php$PHP_VERSION" >/dev/null || echo -e "${YELLOW}⚠ Pull wordpress:cli-php$PHP_VERSION échoué, image locale conservée${NC}"
+done
+
 echo -e "${YELLOW}Testing matrix: WP ${WP_LABELS[@]} × PHP ${PHP_VERSIONS[@]}${NC}\n"
 
 for i in "${!WP_VERSIONS[@]}"; do
@@ -107,13 +124,34 @@ for i in "${!WP_VERSIONS[@]}"; do
       else
         wp-env reset --yes >/dev/null 2>&1
       fi
-      wp-env start >/dev/null 2>&1
+      # Au changement de core/PHP entre deux combos, le premier "start"
+      # après "reset" échoue parfois ("Service cli is not running") :
+      # on retente une fois.
+      if ! wp-env start >/dev/null 2>&1 && ! wp-env start >/dev/null 2>&1; then
+        echo "  wp-env start a échoué"
+        exit 1
+      fi
       sleep 15
       # Le statut du combo = exit code phpunit (l'ancien grep "OK|FAILED"
       # suivi de || true marquait PASSED même avec des tests en échec).
-      RESULT=$(wp-env run cli bash -c "cd /var/www/html && vendor/bin/phpunit" 2>&1)
-      STATUS=$?
-      echo "$RESULT" | grep -E "^(OK|FAILURES|ERRORS|Tests:)" || true
+      # Trois suites : unitaires racine (tests/Unit), unitaires Brain Monkey
+      # et intégration WordPress réelle (wp-env-test/phpunit/).
+      # WP_TESTS_DIR est retiré pour tests/Unit : sinon tests/bootstrap.php
+      # charge la lib de tests WP, qui réinstalle WordPress dans la base
+      # wp-env partagée ("testsEnvironment": false) et désactive le plugin
+      # avant la suite d'intégration.
+      STATUS=0
+      for SUITE in \
+        "cd /var/www/html && env -u WP_TESTS_DIR vendor/bin/phpunit" \
+        "php $EIMN_TESTS/vendor/bin/phpunit -c $EIMN_TESTS/phpunit.unit.xml" \
+        "php $EIMN_TESTS/vendor/bin/phpunit -c $EIMN_TESTS/phpunit.integration.xml"; do
+        if RESULT=$(wp-env run cli bash -c "$SUITE" 2>&1); then
+          echo "$RESULT" | grep -E "^(OK|FAILURES|ERRORS|Tests:)" || true
+        else
+          STATUS=1
+          echo "$RESULT" | tail -30
+        fi
+      done
       wp-env stop >/dev/null 2>&1
       [ "$STATUS" -eq 0 ]
     ); then

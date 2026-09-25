@@ -1,7 +1,7 @@
 === Ethersys Importer For Modelo Netty ===
 Contributors: Ethersys
 Tags: import, real estate, houzez, xml, property
-Requires at least: 6.8
+Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 8.3
 Stable tag: 1.2.7
@@ -45,6 +45,9 @@ The plugin is designed for the Houzez data model (post type `property`, meta key
 The detailed DPE/GES block requires a plugin providing the `[immowp_dpe_ges]` shortcode (e.g. ImmoWP Diagnostic DPE GES). Without it, Houzez energy fields are still synced but the advanced block is disabled.
 
 == Changelog ==
+
+= 1.2.9 =
+Version minimale de WordPress passée à 6.9. Compatibilité validée sur WordPress 6.9, 7.0 et 7.1 (dernier patch de chaque branche) avec PHP 8.3, 8.4 et 8.5.
 
 = 1.2.7 =
 Le déploiement SVN WordPress.org ne purge plus les anciens tags (rollback cassé) ; le champ Stable tag est désormais synchronisé automatiquement avec la version déployée.

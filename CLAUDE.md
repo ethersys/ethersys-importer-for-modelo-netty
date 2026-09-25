@@ -20,8 +20,8 @@ wp eimn import [--dry-run] [--no-delete] [--no-images]
 Suite de tests dans `tests/` (PHPUnit + fixtures). Environnement `wp-env-test/` pour tests intégration.
 
 **Versions testées** (matrice complète validée ✅):
-- WordPress: derniers patchs 6.8.x/6.9.x/7.0.x (résolus dynamiquement via tags GitHub par `test-matrix.sh`, ex. 6.8.8/6.9.7/7.0.4) + dernière bêta/RC en cours si disponible (ex. 7.1-RC3)
-- PHP: 8.3, 8.4, 8.5
+- WordPress: derniers patchs 6.9.x/7.0.x/7.1.x (résolus dynamiquement via tags GitHub par `test-matrix.sh` et par le job `resolve-wp-versions` de la CI, ex. 6.9.9/7.0.6/7.1.2) + dernière bêta/RC en cours si disponible (`test-matrix.sh` uniquement)
+- PHP: 8.3, 8.4, 8.5 (dernier patch : `test-matrix.sh` re-télécharge les images `wordpress:phpX.Y` / `wordpress:cli-phpX.Y`, la CI part toujours d'images fraîches)
 - Tous les combos passent
 
 **Tester localement** :
@@ -29,13 +29,15 @@ Suite de tests dans `tests/` (PHPUnit + fixtures). Environnement `wp-env-test/` 
 # Unit tests (PHP 8.3, 8.4, 8.5)
 composer test
 
-# Integration tests matrice complète (dernier patch 6.8.x/6.9.x/7.0.x + bêta/RC en cours × PHP 8.3/8.4/8.5)
+# Integration tests matrice complète (dernier patch 6.9.x/7.0.x/7.1.x + bêta/RC en cours × PHP 8.3/8.4/8.5)
+# Lance 3 suites par combo : tests/Unit, wp-env-test/phpunit/Unit et wp-env-test/phpunit/Integration
+# Prérequis : composer install à la racine et dans wp-env-test/phpunit
 # Durée: ~15-20 min (~1-2 min par combo)
 cd wp-env-test && bash test-matrix.sh
 
-# Test une seule combinaison (plus rapide, ~20 min)
-cd wp-env-test && wp-env reset --yes && wp-env start && sleep 15 && \
-  wp-env run cli bash -c "cd /var/www/html && vendor/bin/phpunit" && wp-env stop
+# Test une seule combinaison (tests d'intégration WordPress réels)
+cd wp-env-test && WP_ENV_CORE="WordPress/WordPress#7.1.2" WP_ENV_PHP_VERSION=8.3 wp-env start && \
+  wp-env run cli bash -c "php /var/www/html/wp-content/eimn-tests/vendor/bin/phpunit -c /var/www/html/wp-content/eimn-tests/phpunit.integration.xml" && wp-env stop
 ```
 
 Pour validation manuelle : installer le plugin dans un WordPress local + thème Houzez, configurer l’URL de flux dans **Admin → Import Netty**, déclencher l’import et lire les logs (table `{prefix}eimn_import_logs`, écran admin du plugin).

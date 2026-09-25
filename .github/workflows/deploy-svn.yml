@@ -12,7 +12,7 @@ jobs:
     steps:
       # 1. Récupération du code source de GitHub
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Prepare version
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"

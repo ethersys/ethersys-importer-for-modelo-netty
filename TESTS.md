@@ -16,7 +16,7 @@ Chaque combo lance trois suites dans le container wp-env :
 
 - `tests/Unit` (11 tests) ;
 - `wp-env-test/phpunit/Unit`, Brain Monkey (39 tests) ;
-- `wp-env-test/phpunit/Integration`, WordPress réel (55 tests).
+- `wp-env-test/phpunit/Integration`, WordPress réel (56 tests).
 
 ## Lancer les tests
 

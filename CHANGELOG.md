@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.10] - 2026-11-26
+
+### Changements
+
+- **Compatibilité WordPress 7.2** : `Tested up to` passé à 7.2 dans `readme.txt`, suite à validation de la matrice de tests (`wp-env-test/test-matrix.sh`) sur WordPress 7.2-RC3, PHP 8.3/8.4/8.5 (ainsi que 6.9.12, 7.0.9 et 7.1.5).
+
+### Corrections
+
+- **Biens réécrits à chaque import sous WordPress 7.2** : depuis WordPress 7.2, `wp_kses()` repose sur la HTML API et enregistre les `<br />` produits par `wpautop()` sous la forme `<br>`. La détection de changement de `Importer::upsert_property()` comparait le contenu calculé au contenu stocké et concluait à tort à une modification : tout bien dont la description contient un saut de ligne était réécrit (`wp_insert_post()`) à chaque exécution. Le titre et le contenu sont désormais comparés tels que WordPress les enregistre (`sanitize_post_field( …, 'db' )`), ce qui couvre aussi les entités (`&`) normalisées par kses.
+
+### Tests
+
+- **Nouveau test** `test_unchanged_description_does_not_rewrite_post` : un second import d'un flux identique ne doit déclencher aucun `wp_insert_post`.
+- `test_br_tags_converted_in_post_content` accepte les deux sérialisations (`<br />` et `<br>`).
+
 ## [1.2.9] - 2026-09-25
 
 ### Changements

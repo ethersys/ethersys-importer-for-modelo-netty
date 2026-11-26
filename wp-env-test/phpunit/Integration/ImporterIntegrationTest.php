@@ -380,9 +380,30 @@ class ImporterIntegrationTest extends WPTestCase
 
         $post_id = $this->find_property_by_ref('REF-DESC');
         $post    = get_post($post_id);
-        $this->assertStringContainsString('Ligne 1', $post->post_content);
-        $this->assertStringContainsString('Ligne 2', $post->post_content);
-        $this->assertStringNotContainsString('<br>', $post->post_content);
+        // Le <br> du flux devient un saut de ligne, puis wpautop() produit un
+        // paragraphe avec un <br /> ; kses (HTML API depuis WP 7.2) peut le
+        // resérialiser en <br>. Les deux formes sont équivalentes.
+        $this->assertMatchesRegularExpression('#^<p>Ligne 1<br ?/?>\s*Ligne 2</p>\s*$#', $post->post_content);
+    }
+
+    public function test_unchanged_description_does_not_rewrite_post(): void
+    {
+        $xml  = '<flux><bien><reference_technique>REF-DESC-SAME</reference_technique>' .
+                '<type_annonce>location</type_annonce><titre>T &amp; co</titre>' .
+                '<description>Ligne 1&lt;br&gt;Ligne 2&lt;br&gt;&lt;br&gt;&lt;br&gt;A &amp; B</description></bien></flux>';
+        $hook = $this->stub_feed($xml);
+        Importer::run(['sync_images' => false, 'delete_missing' => false]);
+
+        $writes  = 0;
+        $counter = static function () use (&$writes): void {
+            $writes++;
+        };
+        add_action('wp_insert_post', $counter);
+        Importer::run(['sync_images' => false, 'delete_missing' => false]);
+        remove_action('wp_insert_post', $counter);
+        $this->unstub_feed($hook);
+
+        $this->assertSame(0, $writes, 'Un flux identique ne doit pas réécrire le bien.');
     }
 
     // ──── Agent par défaut ────────────────────────────────────────────────────

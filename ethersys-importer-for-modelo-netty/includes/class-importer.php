@@ -406,15 +406,21 @@ final class Importer {
 			'post_content' => $post_content,
 		];
 
-		// Check if title/content have actually changed before calling wp_insert_post
+		// Check if title/content have actually changed before calling wp_insert_post.
+		// The comparison uses the values as WordPress will store them: wp_insert_post()
+		// runs the 'db' sanitization filters (e.g. kses when the current user lacks
+		// unfiltered_html), which may reserialize the markup. Since WordPress 7.2,
+		// kses relies on the HTML API and turns wpautop()'s "<br />" into "<br>";
+		// comparing the raw wpautop() output would rewrite every post on each run.
 		$needs_write = true;
 		if ( $post_id > 0 ) {
-			$existing_post = get_post( $post_id );
-			$new_title     = (string) ( $rec['titre'] ?? '' );
+			$existing_post  = get_post( $post_id );
+			$stored_title   = wp_unslash( sanitize_post_field( 'post_title', wp_slash( $postarr['post_title'] ), $post_id, 'db' ) );
+			$stored_content = wp_unslash( sanitize_post_field( 'post_content', wp_slash( $post_content ), $post_id, 'db' ) );
 			if (
 				$existing_post instanceof \WP_Post &&
-				$existing_post->post_title === $new_title &&
-				$existing_post->post_content === $post_content
+				$existing_post->post_title === $stored_title &&
+				$existing_post->post_content === $stored_content
 			) {
 				$needs_write = false;
 			}

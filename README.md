@@ -8,7 +8,7 @@
 [![Issues](https://img.shields.io/github/issues/ethersys/ethersys-importer-for-modelo-netty?style=flat-square&color=44cc11)](https://github.com/ethersys/ethersys-importer-for-modelo-netty/issues)
 
 Dépôt officiel : [github.com/ethersys/ethersys-importer-for-modelo-netty](https://github.com/ethersys/ethersys-importer-for-modelo-netty)
-Version : 1.2.9
+Version : 1.2.10
 
 WordPress Plugin Directory : [https://fr.wordpress.org/plugins/ethersys-importer-for-modelo-netty/](https://fr.wordpress.org/plugins/ethersys-importer-for-modelo-netty/)
 
